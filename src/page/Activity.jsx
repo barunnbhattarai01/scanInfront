@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import QRCodeGenerator from "../Components/Qr";
 
 const style = {
   container: {
@@ -143,10 +144,17 @@ function ActivitiesPage() {
   const handleAddActivity = async (e) => {
     e.preventDefault();
     try {
+      const startISO = new Date(activityForm.start_time).toISOString();
+      const endISO = new Date(activityForm.end_time).toISOString();
       const res = await fetch(`http://localhost:4000/activity`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...activityForm, event_id: eventId }),
+        body: JSON.stringify({
+          ...activityForm,
+          start_time: startISO,
+          end_time: endISO,
+          event_id: eventId
+        }),
       });
       if (!res.ok) throw new Error("Failed to add activity");
 
@@ -318,13 +326,19 @@ function ActivitiesPage() {
             {attendees.length > 0 ? (
               attendees.map((att) => (
                 <li key={att.id} style={style.listItem}>
-                  <strong>{att.full_name || att.user_full_name || "No Name"}</strong> — Role: {att.role}
+                  <strong>{att.full_name}</strong> — Role: {att.role}
                   <br />
                   Email: {att.email || att.user_email || "N/A"}
                   <br />
                   Phone: {att.phone || "N/A"}
-                </li>
-              ))
+                  <br />
+                  <div style={{ marginTop: 10 }}>
+                    <QRCodeGenerator
+                      text={JSON.stringify({eventId:eventId,userId:att.id})}
+                      size={100}
+                    />
+                  </div>
+                </li>))
             ) : (
               <li>No attendees found.</li>
             )}

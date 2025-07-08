@@ -55,10 +55,13 @@ function EventsPage() {
   async function createEvent(e) {
     e.preventDefault();
     try {
+
+      const startISO = new Date(newEvent.start_time).toISOString();
+      const endISO = new Date(newEvent.end_time).toISOString();
       await fetch("http://localhost:4000/event", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newEvent),
+        body: JSON.stringify({ ...newEvent, start_time: startISO, end_time: endISO }),
       });
       setShowForm(false);
       setNewEvent({ name: "", description: "", location: "", start_time: "", end_time: "" });
@@ -81,8 +84,20 @@ function EventsPage() {
           <input placeholder="Name" value={newEvent.name} onChange={e => setNewEvent({ ...newEvent, name: e.target.value })} required style={inputStyle} />
           <input placeholder="Description" value={newEvent.description} onChange={e => setNewEvent({ ...newEvent, description: e.target.value })} style={inputStyle} />
           <input placeholder="Location" value={newEvent.location} onChange={e => setNewEvent({ ...newEvent, location: e.target.value })} style={inputStyle} />
-          <input placeholder="Start Time (ISO)" value={newEvent.start_time} onChange={e => setNewEvent({ ...newEvent, start_time: e.target.value })} required style={inputStyle} />
-          <input placeholder="End Time (ISO)" value={newEvent.end_time} onChange={e => setNewEvent({ ...newEvent, end_time: e.target.value })} style={inputStyle} />
+
+          <input
+            type="datetime-local"
+            value={newEvent.start_time}
+            onChange={e => setNewEvent({ ...newEvent, start_time: e.target.value })}
+            required
+            style={inputStyle}
+          />
+          <input
+            type="datetime-local"
+            value={newEvent.end_time}
+            onChange={e => setNewEvent({ ...newEvent, end_time: e.target.value })}
+            style={inputStyle}
+          />
           <div>
             <button type="submit" style={{ ...buttonStyle, marginRight: 10 }}>Save</button>
             <button type="button" style={{ ...buttonStyle, backgroundColor: "#999" }} onClick={() => setShowForm(false)}>Cancel</button>
