@@ -1,41 +1,29 @@
-
-
 // QRScanner.jsx
-import React, { useRef, useState } from "react";
+import React, { useEffect } from "react";
+import { Html5QrcodeScanner } from "html5-qrcode";
 
-function QRScanner() {
-  const videoRef = useRef(null);
-  const [error, setError] = useState("");
-  const [hasCameraAccess, setHasCameraAccess] = useState(false);
+function QRScanner({ onScanSuccess }) {
+  useEffect(() => {
+    const scanner = new Html5QrcodeScanner("qr-reader", {
+      fps: 10,
+      qrbox: { width: 250, height: 250 },
+    });
 
-  const requestCameraAccess = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      setHasCameraAccess(true);
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+    scanner.render(
+      (decodedText) => {
+        if (onScanSuccess) onScanSuccess(decodedText);
+      },
+      (errorMessage) => {
+        // Optional: handle error
       }
-    } catch (err) {
-      console.error("Camera access error:", err);
-      setError("Camera access denied or not available.");
-    }
-  };
+    );
 
-  return (
-    <div style={{ padding: 20 }}>
-      <h2>QR Scanner</h2>
+    return () => {
+      scanner.clear().catch((error) => console.error("Clear failed:", error));
+    };
+  }, [onScanSuccess]);
 
-      {!hasCameraAccess ? (
-        <button onClick={requestCameraAccess} style={{ padding: "10px 20px", fontSize: "16px" }}>
-          Request Camera Access
-        </button>
-      ) : (
-        <video ref={videoRef} autoPlay playsInline style={{ width: "100%", maxWidth: 400 }} />
-      )}
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </div>
-  );
+  return <div id="qr-reader" style={{ width: "300px" }} />;
 }
 
 export default QRScanner;
