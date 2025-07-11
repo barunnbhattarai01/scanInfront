@@ -48,7 +48,11 @@ function EventsPage() {
   useEffect(() => {
     fetch("http://localhost:4000/event")
       .then(res => res.json())
-      .then(setEvents)
+      .then((json)=>{
+        if(json!=null){
+        setEvents(json)
+        }
+      })
       .catch(console.error);
   }, []);
 

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useParams } from "react-router-dom";
 import ActivitiesPage from "./page/Activity";
 import EventsPage from "./page/Event";
 import UsersPage from "./page/Userpage";
+import ScanQr from "./page/ScanQr";
 function App() {
   return (
     <Router>
@@ -12,6 +12,7 @@ function App() {
       </nav>
 
       <Routes>
+        <Route path="/scan" element={<ScanQr />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/users" element={<UsersPage />} />
         <Route path="/activity/:eventId" element={<ActivitiesPage />} />
