@@ -1,5 +1,58 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+const style = {
+  container: {
+    maxWidth: 600,
+    margin: "20px auto",
+    padding: 20,
+    fontFamily: "Arial, sans-serif",
+  },
+  toggleContainer: {
+    display: "flex",
+    gap: 10,
+    marginBottom: 20,
+  },
+  toggleButton: (active) => ({
+    padding: "8px 16px",
+    cursor: "pointer",
+    borderRadius: 4,
+    border: "1px solid #2563eb",
+    backgroundColor: active ? "#2563eb" : "white",
+    color: active ? "white" : "#2563eb",
+    fontWeight: active ? "bold" : "normal",
+  }),
+  button: {
+    padding: "8px 12px",
+    backgroundColor: "#2563eb",
+    color: "white",
+    border: "none",
+    borderRadius: 4,
+    cursor: "pointer",
+    marginBottom: 20,
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+    marginBottom: 20,
+    padding: 10,
+    border: "1px solid #ccc",
+    borderRadius: 4,
+  },
+  input: {
+    padding: 8,
+    borderRadius: 4,
+    border: "1px solid #ccc",
+    fontSize: 16,
+  },
+  listItem: {
+    marginBottom: 10,
+    padding: 10,
+    border: "1px solid #ddd",
+    borderRadius: 4,
+  },
+};
+
 
 function EventsPage() {
   const [events, setEvents] = useState([]);
