@@ -1,5 +1,3 @@
-
-// EventsPage.jsx
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
@@ -27,7 +25,7 @@ const inputStyle = {
 };
 
 const buttonStyle = {
-  padding: "8px 12px",
+  padding: "10px 15px",
   backgroundColor: "#2563eb",
   color: "white",
   border: "none",
@@ -37,8 +35,9 @@ const buttonStyle = {
 
 const listItemStyle = {
   borderBottom: "1px solid #ddd",
-  padding: "12px 0",
+  padding: "8px 0",
 };
+
 
 function EventsPage() {
   const [events, setEvents] = useState([]);

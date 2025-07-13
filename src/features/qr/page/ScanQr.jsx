@@ -1,6 +1,5 @@
-// ScanQr.jsx
 import React, { useState } from "react";
-import QRScanner from "../Components/QrScanner";
+import QRScanner from "../components/QrScanner";
 
 function ScanQr() {
   const [scannedText, setScannedText] = useState("");
@@ -21,6 +20,7 @@ function ScanQr() {
       {scannedText && (
         <div style={{ marginTop: "20px", fontSize: "18px", color: "green" }}>
           <strong>Scanned QR:</strong> {scannedText}
+          
         </div>
       )}
     </div>
