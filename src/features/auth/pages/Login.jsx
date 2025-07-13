@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
 import { Mail, Lock } from "lucide-react";
 import { useFirebaseAuth } from "../hooks/useFirebaseAuth";
-import { auth } from "../../../firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../../firebase/firebase";
 
 export default function Login() {
   const { signInWithGoogle, loading, error } = useFirebaseAuth();
-
-
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
