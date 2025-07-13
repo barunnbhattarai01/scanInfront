@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import QRCode from "qrcode"; 
+import QRCode from "qrcode";
 
 function QRCodeGenerator({ text }) {
   const [qrUrl, setQrUrl] = useState("");
@@ -22,11 +22,9 @@ function QRCodeGenerator({ text }) {
 
   return (
     <div style={{ marginTop: 10 }}>
-      <h4>QR Code</h4>
       {qrUrl ? <img src={qrUrl} alt="QR Code" /> : <p>Generating...</p>}
     </div>
   );
 }
 
 export default QRCodeGenerator;
-

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useUserInfo from "../features/common/hooks/useUserInfo";
 
 const containerStyle = {
   maxWidth: 600,
@@ -38,36 +39,66 @@ const listItemStyle = {
   padding: "12px 0",
 };
 
-
 function EventsPage() {
   const [events, setEvents] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [newEvent, setNewEvent] = useState({ name: "", description: "", location: "", start_time: "", end_time: "" });
+
+  const [newEvent, setNewEvent] = useState({
+    name: "",
+    description: "",
+    location: "",
+    start_time: "",
+    end_time: "",
+  });
+
+  const { user, loading } = useUserInfo();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://localhost:4000/event")
-      .then(res => res.json())
-      .then((json)=>{
-        if(json!=null){
-        setEvents(json)
+      .then((res) => res.json())
+      .then((json) => {
+        if (json != null) {
+          setEvents(json);
         }
       })
       .catch(console.error);
   }, []);
 
+  // to check if the user is already loged in or not
+
+  useEffect(() => {
+    if (loading == false) {
+      console.log(user);
+
+      if (!user) {
+        navigate("/login", { replace: true });
+      }
+    }
+  }, [user, loading]);
+
   async function createEvent(e) {
     e.preventDefault();
     try {
-
       const startISO = new Date(newEvent.start_time).toISOString();
       const endISO = new Date(newEvent.end_time).toISOString();
       await fetch("http://localhost:4000/event", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...newEvent, start_time: startISO, end_time: endISO }),
+        body: JSON.stringify({
+          ...newEvent,
+          start_time: startISO,
+          end_time: endISO,
+        }),
       });
       setShowForm(false);
-      setNewEvent({ name: "", description: "", location: "", start_time: "", end_time: "" });
+      setNewEvent({
+        name: "",
+        description: "",
+        location: "",
+        start_time: "",
+        end_time: "",
+      });
       const res = await fetch("http://localhost:4000/event");
       const updatedEvents = await res.json();
       setEvents(updatedEvents);
@@ -80,40 +111,79 @@ function EventsPage() {
     <div style={containerStyle}>
       <h1>Events</h1>
 
-      <button style={buttonStyle} onClick={() => setShowForm(true)}>Create Event</button>
+      <button style={buttonStyle} onClick={() => setShowForm(true)}>
+        Create Event
+      </button>
 
       {showForm && (
         <form onSubmit={createEvent} style={formStyle}>
-          <input placeholder="Name" value={newEvent.name} onChange={e => setNewEvent({ ...newEvent, name: e.target.value })} required style={inputStyle} />
-          <input placeholder="Description" value={newEvent.description} onChange={e => setNewEvent({ ...newEvent, description: e.target.value })} style={inputStyle} />
-          <input placeholder="Location" value={newEvent.location} onChange={e => setNewEvent({ ...newEvent, location: e.target.value })} style={inputStyle} />
+          <input
+            placeholder="Name"
+            value={newEvent.name}
+            onChange={(e) => setNewEvent({ ...newEvent, name: e.target.value })}
+            required
+            style={inputStyle}
+          />
+          <input
+            placeholder="Description"
+            value={newEvent.description}
+            onChange={(e) =>
+              setNewEvent({ ...newEvent, description: e.target.value })
+            }
+            style={inputStyle}
+          />
+          <input
+            placeholder="Location"
+            value={newEvent.location}
+            onChange={(e) =>
+              setNewEvent({ ...newEvent, location: e.target.value })
+            }
+            style={inputStyle}
+          />
 
           <input
             type="datetime-local"
             value={newEvent.start_time}
-            onChange={e => setNewEvent({ ...newEvent, start_time: e.target.value })}
+            onChange={(e) =>
+              setNewEvent({ ...newEvent, start_time: e.target.value })
+            }
             required
             style={inputStyle}
           />
           <input
             type="datetime-local"
             value={newEvent.end_time}
-            onChange={e => setNewEvent({ ...newEvent, end_time: e.target.value })}
+            onChange={(e) =>
+              setNewEvent({ ...newEvent, end_time: e.target.value })
+            }
             style={inputStyle}
           />
           <div>
-            <button type="submit" style={{ ...buttonStyle, marginRight: 10 }}>Save</button>
-            <button type="button" style={{ ...buttonStyle, backgroundColor: "#999" }} onClick={() => setShowForm(false)}>Cancel</button>
+            <button type="submit" style={{ ...buttonStyle, marginRight: 10 }}>
+              Save
+            </button>
+            <button
+              type="button"
+              style={{ ...buttonStyle, backgroundColor: "#999" }}
+              onClick={() => setShowForm(false)}
+            >
+              Cancel
+            </button>
           </div>
         </form>
       )}
 
       <ul style={{ marginTop: 20, paddingLeft: 0, listStyle: "none" }}>
-        {events.map(e => (
+        {events.map((e) => (
           <li key={e.id} style={listItemStyle}>
-            <div style={{ fontWeight: "bold" }}>{e.name} – {e.location}</div>
+            <div style={{ fontWeight: "bold" }}>
+              {e.name} – {e.location}
+            </div>
             <div style={{ marginTop: 5 }}>
-              <Link to={`/activity/${e.id}`} style={{ textDecoration: "underline", color: "#2563eb" }}>
+              <Link
+                to={`/activity/${e.id}`}
+                style={{ textDecoration: "underline", color: "#2563eb" }}
+              >
                 View More
               </Link>
             </div>
@@ -125,4 +195,3 @@ function EventsPage() {
 }
 
 export default EventsPage;
-
