@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../firebase/firebase";
 
-function useUser() {
+function useUserInfo() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -18,5 +18,5 @@ function useUser() {
   return { user, loading };
 }
 
-export default useUser;
+export default useUserInfo;
 

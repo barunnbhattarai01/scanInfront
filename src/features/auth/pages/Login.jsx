@@ -1,43 +1,29 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Mail, Lock } from "lucide-react";
 import { useFirebaseAuth } from "../hooks/useFirebaseAuth";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../../firebase/firebase";
 
 export default function Login() {
   const { signInWithGoogle, loading, error } = useFirebaseAuth();
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        console.log(currentUser.displayName);
-      } else {
-        console.log("No user logged in");
-      }
-    });
-    return () => unsubscribe();
-  }, []);
 
   const handleGoogleLogin = async () => {
     const user = await signInWithGoogle();
     if (user) {
       console.log("Logged in as:", user.displayName);
-    }else{
+    } else {
       console.log("failed to log in");
     }
   };
 
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="h-[90vh] flex max-w-6xl w-full mx-auto rounded-3xl shadow-xl overflow-hidden">
+      <div className="h-[90vh] max-md:h-screen flex max-w-6xl w-full mx-auto rounded-3xl shadow-xl overflow-hidden">
 
         {/* Left Side */}
-        <div className="relative flex-1">
+        <div className="relative flex-1 max-md:flex-0">
           <img
             src="https://images.unsplash.com/photo-1650488908294-07186d808e5d?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             alt="ECMS background"
-            className="absolute inset-0 w-full h-full object-cover rounded-l-3xl"
+            className="absolute max-md:invisible inset-0 max-md:w-0 max-md:h-0 w-full h-full object-cover rounded-l-3xl"
           />
         </div>
 
