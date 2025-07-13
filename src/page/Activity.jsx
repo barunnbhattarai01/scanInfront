@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import QRCodeGenerator from "../features/qr/components/QRCodeGenerator";
+import PdfFile from "../features/common/component/PdfFile";
 const style = {
   container: {
     maxWidth: 600,
@@ -67,15 +68,25 @@ function ActivitiesPage() {
   const [showAddAttendeeForm, setShowAddAttendeeForm] = useState(false);
 
   // Form data
-  const [activityForm, setActivityForm] = useState({ name: "", type: "", start_time: "", end_time: "" });
-  const [attendeeForm, setAttendeeForm] = useState({ user_id: "", role: "participant" });
+  const [activityForm, setActivityForm] = useState({
+    name: "",
+    type: "",
+    start_time: "",
+    end_time: "",
+  });
+  const [attendeeForm, setAttendeeForm] = useState({
+    user_id: "",
+    role: "participant",
+  });
 
   const [users, setUsers] = useState([]);
 
   // Fetch event info and activities
   const fetchEventInfo = async () => {
     try {
-      const res = await fetch(`http://localhost:4000/eventinfo?event_id=${eventId}`);
+      const res = await fetch(
+        `http://localhost:4000/eventinfo?event_id=${eventId}`
+      );
       const data = await res.json();
       setEvent(data.event);
       setActivities(data.activities);
@@ -150,7 +161,7 @@ function ActivitiesPage() {
           ...activityForm,
           start_time: startISO,
           end_time: endISO,
-          event_id: eventId
+          event_id: eventId,
         }),
       });
       if (!res.ok) throw new Error("Failed to add activity");
@@ -217,7 +228,10 @@ function ActivitiesPage() {
       {/* Show Add button and form conditionally */}
       {view === "activities" && (
         <>
-          <button style={style.button} onClick={() => setShowAddActivityForm((v) => !v)}>
+          <button
+            style={style.button}
+            onClick={() => setShowAddActivityForm((v) => !v)}
+          >
             {showAddActivityForm ? "Cancel Add Activity" : "Add Activity"}
           </button>
 
@@ -278,7 +292,10 @@ function ActivitiesPage() {
 
       {view === "attendees" && (
         <>
-          <button style={style.button} onClick={() => setShowAddAttendeeForm((v) => !v)}>
+          <button
+            style={style.button}
+            onClick={() => setShowAddAttendeeForm((v) => !v)}
+          >
             {showAddAttendeeForm ? "Cancel Add Attendee" : "Add Attendee"}
           </button>
 
@@ -321,20 +338,16 @@ function ActivitiesPage() {
           <ul style={{ listStyle: "none", padding: 0 }}>
             {attendees.length > 0 ? (
               attendees.map((att) => (
-                <li key={att.id} style={style.listItem}>
-                  <strong>{att.full_name}</strong> — Role: {att.role}
-                  <br />
-                  Email: {att.email || att.user_email || "N/A"}
-                  <br />
-                  Phone: {att.phone || "N/A"}
-                  <br />
-                  <div style={{ marginTop: 10 }}>
-                    <QRCodeGenerator
-                      text={JSON.stringify({eventId:eventId,userId:att.id})}
-                      size={100}
-                    />
-                  </div>
-                </li>))
+                <PdfFile
+                  eventId={eventId}
+                  user_id={att.id}
+                  key={att.id}
+                  email={att.email || att.user_email || "N/A"}
+                  username={att.full_name}
+                  role={att.role}
+                  phone={att.phone}
+                />
+              ))
             ) : (
               <li>No attendees found.</li>
             )}
@@ -342,7 +355,7 @@ function ActivitiesPage() {
         </>
       )}
 
-      <Link to="/events" style={{ textDecoration: "underline", color: "#2563eb" }}>
+      <Link to="/" style={{ textDecoration: "underline", color: "#2563eb" }}>
         ← Back to Events
       </Link>
     </div>
@@ -351,3 +364,24 @@ function ActivitiesPage() {
 
 export default ActivitiesPage;
 
+// (
+//               attendees.map((att) => (
+//                 <li key={att.id} style={style.listItem}>
+//                   <strong>{att.full_name}</strong> — Role: {att.role}
+//                   <br />
+//                   Email: {att.email || att.user_email || "N/A"}
+//                   <br />
+//                   Phone: {att.phone || "N/A"}
+//                   <br />
+//                   <div style={{ marginTop: 10 }}>
+//                     <QRCodeGenerator
+//                       text={JSON.stringify({
+//                         eventId: eventId,
+//                         userId: att.id,
+//                       })}
+//                       size={100}
+//                     />
+//                   </div>
+//                 </li>
+//               ))
+//             )

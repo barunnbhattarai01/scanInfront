@@ -1,14 +1,17 @@
 import React from "react";
 import { Mail, Lock } from "lucide-react";
 import { useFirebaseAuth } from "../hooks/useFirebaseAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const { signInWithGoogle, loading, error } = useFirebaseAuth();
+  const navigate = useNavigate();
 
   const handleGoogleLogin = async () => {
     const user = await signInWithGoogle();
     if (user) {
       console.log("Logged in as:", user.displayName);
+      navigate("/", { replace: true });
     } else {
       console.log("failed to log in");
     }
@@ -17,7 +20,6 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="h-[90vh] max-md:h-screen flex max-w-6xl w-full mx-auto rounded-3xl shadow-xl overflow-hidden">
-
         {/* Left Side */}
         <div className="relative flex-1 max-md:flex-0">
           <img
@@ -29,7 +31,9 @@ export default function Login() {
 
         {/* Right Side Login Form */}
         <div className="flex flex-col justify-center flex-1 bg-white p-16 rounded-r-3xl">
-          <h1 className="text-center text-5xl mb-15 text-orange-600 font-bold">ECMS</h1>
+          <h1 className="text-center text-5xl mb-15 text-orange-600 font-bold">
+            ECMS
+          </h1>
           <div className="max-w-md mx-auto w-full font-sans">
             <div className="mb-10 text-center">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -44,8 +48,9 @@ export default function Login() {
             <button
               onClick={handleGoogleLogin}
               disabled={loading}
-              className={`w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-3 text-gray-700 hover:bg-orange-50 transition mb-6 ${loading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+              className={`w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-3 text-gray-700 hover:bg-orange-50 transition mb-6 ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               <img
                 src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -71,7 +76,9 @@ export default function Login() {
 
             <form className="space-y-8">
               <div>
-                <label htmlFor="email" className="sr-only">Email address</label>
+                <label htmlFor="email" className="sr-only">
+                  Email address
+                </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                   <input
@@ -86,7 +93,9 @@ export default function Login() {
               </div>
 
               <div>
-                <label htmlFor="password" className="sr-only">Password</label>
+                <label htmlFor="password" className="sr-only">
+                  Password
+                </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                   <input
@@ -139,4 +148,3 @@ export default function Login() {
     </div>
   );
 }
-

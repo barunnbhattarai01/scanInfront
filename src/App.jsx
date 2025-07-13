@@ -9,10 +9,9 @@ function App() {
   return (
     <Router>
       <Routes>
-
         <Route element={<NavLayout />}>
           <Route path="/scan" element={<ScanQr />} />
-          <Route path="/events" element={<EventsPage />} />
+          <Route path="/" index element={<EventsPage />} />
           <Route path="/users" element={<UsersPage />} />
           <Route path="/activity/:eventId" element={<ActivitiesPage />} />
         </Route>
@@ -24,4 +23,3 @@ function App() {
 }
 
 export default App;
-
