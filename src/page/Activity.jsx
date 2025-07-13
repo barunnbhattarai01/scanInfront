@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-
+import QRCodeGenerator from "../features/qr/components/QRCodeGenerator";
 const style = {
   container: {
     maxWidth: 600,
@@ -163,7 +163,6 @@ function ActivitiesPage() {
     }
   };
 
-  // Submit new attendee
   const handleAddAttendee = async (e) => {
     e.preventDefault();
     try {

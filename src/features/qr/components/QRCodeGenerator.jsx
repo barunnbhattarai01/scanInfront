@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import QRCode from "qrcode"; // ensure `qrcode` installed with: npm install qrcode
+import QRCode from "qrcode"; 
 
 function QRCodeGenerator({ text }) {
   const [qrUrl, setQrUrl] = useState("");
