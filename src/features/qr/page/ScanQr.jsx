@@ -1,8 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import QRScanner from "../components/QrScanner";
+import useUserInfo from "../../common/hooks/useUserInfo";
 
 function ScanQr() {
   const [scannedText, setScannedText] = useState("");
+  const { user, loading } = useUserInfo();
+
+  useEffect(() => {
+    if (loading == false) {
+      console.log(user);
+
+      if (!user) {
+        navigate("/login", { replace: true });
+      }
+    }
+  }, [user, loading]);
 
   return (
     <div
@@ -20,7 +32,6 @@ function ScanQr() {
       {scannedText && (
         <div style={{ marginTop: "20px", fontSize: "18px", color: "green" }}>
           <strong>Scanned QR:</strong> {scannedText}
-          
         </div>
       )}
     </div>
@@ -28,4 +39,3 @@ function ScanQr() {
 }
 
 export default ScanQr;
-

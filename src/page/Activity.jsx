@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import PdfFile from "../features/common/component/PdfFile";
 import { BACKENDURL } from "../configuration";
 import { Ban } from "lucide-react";
+import CheckIn from "./CheckIn";
 
 const style = {
   container: {
@@ -63,11 +64,12 @@ function ActivitiesPage() {
   const [event, setEvent] = useState(null);
   const [activities, setActivities] = useState([]);
   const [attendees, setAttendees] = useState([]);
-  const [view, setView] = useState("activities"); 
+  const [view, setView] = useState("activities");
 
   // Form state toggles
   const [showAddActivityForm, setShowAddActivityForm] = useState(false);
   const [showAddAttendeeForm, setShowAddAttendeeForm] = useState(false);
+  const [showScanIn, setShowScanIn] = useState(false);
 
   // Form data
   const [activityForm, setActivityForm] = useState({
@@ -207,8 +209,8 @@ function ActivitiesPage() {
           style={style.toggleButton(view === "activities")}
           onClick={() => {
             setView("activities");
-            setShowAddActivityForm(false);
-            setShowAddAttendeeForm(false);
+            // setShowAddActivityForm(false);
+            // setShowAddAttendeeForm(false);
           }}
         >
           Activities
@@ -217,11 +219,22 @@ function ActivitiesPage() {
           style={style.toggleButton(view === "attendees")}
           onClick={() => {
             setView("attendees");
+            // setShowAddActivityForm(false);
+            // setShowAddAttendeeForm(false);
+          }}
+        >
+          Attendees
+        </button>
+
+        <button
+          style={style.toggleButton(view === "checkin")}
+          onClick={() => {
+            setView("checkin");
             setShowAddActivityForm(false);
             setShowAddAttendeeForm(false);
           }}
         >
-          Attendees
+          Check In
         </button>
       </div>
 
@@ -340,7 +353,7 @@ function ActivitiesPage() {
               attendees.map((att) => (
                 <PdfFile
                   eventId={eventId}
-                  user_id={att.id}
+                  attendee_id={att.attendee_id}
                   key={att.id}
                   email={att.email || att.user_email || "N/A"}
                   username={att.full_name}
@@ -355,7 +368,12 @@ function ActivitiesPage() {
         </>
       )}
 
-      <Link to="/" style={{ textDecoration: "underline", color: "#2563eb" }}>
+      {view === "checkin" && <CheckIn />}
+
+      <Link
+        to="/event"
+        style={{ textDecoration: "underline", color: "#2563eb" }}
+      >
         ← Back to Events
       </Link>
     </div>
