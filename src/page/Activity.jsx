@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import QRCodeGenerator from "../features/qr/components/QRCodeGenerator";
 import PdfFile from "../features/common/component/PdfFile";
+import { backEndUrl } from "../config/config";
+
 const style = {
   container: {
     maxWidth: 600,
@@ -84,9 +86,7 @@ function ActivitiesPage() {
   // Fetch event info and activities
   const fetchEventInfo = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:4000/eventinfo?event_id=${eventId}`
-      );
+      const res = await fetch(`${backEndUrl}/eventinfo?event_id=${eventId}`);
       const data = await res.json();
       setEvent(data.event);
       setActivities(data.activities);
@@ -98,7 +98,7 @@ function ActivitiesPage() {
   // Fetch attendees for event
   const fetchAttendees = async () => {
     try {
-      const res = await fetch(`http://localhost:4000/users/${eventId}`);
+      const res = await fetch(`${backEndUrl}/users/${eventId}`);
       if (res.ok) {
         const data = await res.json();
         if (data != null) {
@@ -116,7 +116,7 @@ function ActivitiesPage() {
   // Fetch users for attendee form select
   const fetchUsers = async () => {
     try {
-      const res = await fetch("http://localhost:4000/user");
+      const res = await fetch(`${backEndUrl}/user`);
       const data = await res.json();
       if (data != null) {
         setUsers(data);
@@ -154,7 +154,7 @@ function ActivitiesPage() {
     try {
       const startISO = new Date(activityForm.start_time).toISOString();
       const endISO = new Date(activityForm.end_time).toISOString();
-      const res = await fetch(`http://localhost:4000/activity`, {
+      const res = await fetch(`${backEndUrl}/activity`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -177,7 +177,7 @@ function ActivitiesPage() {
   const handleAddAttendee = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:4000/attendees`, {
+      const res = await fetch(`${backEndUrl}/attendees`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...attendeeForm, event_id: eventId }),
