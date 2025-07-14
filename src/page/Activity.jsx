@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import PdfFile from "../features/common/component/PdfFile";
 import { BACKENDURL } from "../configuration";
 import { Ban } from "lucide-react";
@@ -59,7 +59,7 @@ const style = {
 
 function ActivitiesPage() {
   const { eventId } = useParams();
-
+  const navigate = useNavigate()
   const [event, setEvent] = useState(null);
   const [activities, setActivities] = useState([]);
   const [attendees, setAttendees] = useState([]);
@@ -278,7 +278,10 @@ function ActivitiesPage() {
           <h2>Activities</h2>
           <ul style={{ listStyle: "none", padding: 0 }}>
             {activities?.map((a) => (
-              <li key={a.id} style={style.listItem}>
+              <li key={a.id} style={style.listItem} onClick={()=>{
+                console.log(a) 
+                navigate(`/scan/${a.id}`)
+              }}>
                 <strong>{a.name}</strong> – {a.type}
                 <br />
                 Start: {new Date(a.start_time).toLocaleString()}

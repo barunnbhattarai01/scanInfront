@@ -10,7 +10,7 @@ function App() {
     <Router>
       <Routes>
         <Route element={<NavLayout />}>
-          <Route path="/scan" element={<ScanQr />} />
+          <Route path="/scan/:activityId" element={<ScanQr />} />
           <Route path="/" index element={<EventsPage />} />
           <Route path="/users" element={<UsersPage />} />
           <Route path="/activity/:eventId" element={<ActivitiesPage />} />
