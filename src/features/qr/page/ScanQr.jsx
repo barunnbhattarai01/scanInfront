@@ -1,11 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { useEffect} from "react";
 import QRScanner from "../components/QrScanner";
 import { useParams } from "react-router-dom";
 import { BACKENDURL } from "../../../configuration";
 
+
 function ScanQr() {
-  const [scannedText, setScannedText] = useState("");
+  const { user, loading } = useUserInfo();
   const { activityId } = useParams();
+
+  useEffect(() => {
+    if (loading == false) {
+      console.log(user);
+
+      if (!user) {
+        navigate("/login", { replace: true });
+      }
+    }
+  }, [user, loading]);
 
   async function onClick(attendeeId) {
     const respose = await fetch(BACKENDURL + "/checkins", {
@@ -43,4 +54,3 @@ function ScanQr() {
 }
 
 export default ScanQr;
-
