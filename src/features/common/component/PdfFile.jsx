@@ -5,7 +5,7 @@ import { useRef } from "react";
 
 export default function PdfFile({
   eventId,
-  userId,
+  attendee_id,
   username,
   email,
   phone,
@@ -62,7 +62,7 @@ export default function PdfFile({
               <QRCodeGenerator
                 text={JSON.stringify({
                   eventId: eventId,
-                  userId,
+                  attendee_id,
                 })}
                 size={100}
               />
