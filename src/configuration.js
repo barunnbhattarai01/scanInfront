@@ -1,1 +1,1 @@
-export const BACKENDURL = "http://localhost:8080"
+export const BACKENDURL = "https://scanin-production.up.railway.app"
