@@ -60,10 +60,7 @@ export default function PdfFile({
             {/* qrscanner */}
             <div className="">
               <QRCodeGenerator
-                text={JSON.stringify({
-                  eventId: eventId,
-                  attendee_id,
-                })}
+                text={attendee_id}
                 size={100}
               />
             </div>

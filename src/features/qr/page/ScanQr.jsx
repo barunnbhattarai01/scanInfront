@@ -1,17 +1,17 @@
 import { useEffect} from "react";
 import QRScanner from "../components/QrScanner";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BACKENDURL } from "../../../configuration";
+import useUserInfo from "../../common/hooks/useUserInfo";
 
 
 function ScanQr() {
   const { user, loading } = useUserInfo();
   const { activityId } = useParams();
-
+  const navigate = useNavigate()
   useEffect(() => {
     if (loading == false) {
       console.log(user);
-
       if (!user) {
         navigate("/login", { replace: true });
       }

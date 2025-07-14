@@ -374,7 +374,7 @@ function ActivitiesPage() {
       {view === "checkin" && <CheckIn />}
 
       <Link
-        to="/event"
+        to="/"
         style={{ textDecoration: "underline", color: "#2563eb" }}
       >
         ← Back to Events
