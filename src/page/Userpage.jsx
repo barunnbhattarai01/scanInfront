@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { backEndUrl } from "../config/config";
+import { BACKENDURL } from "../configuration";
 
 const containerStyle = {
   maxWidth: 600,
@@ -49,7 +49,7 @@ function UsersPage() {
   });
 
   useEffect(() => {
-    fetch(`${backEndUrl}/user`)
+    fetch(`${BACKENDURL}/user`)
       .then((res) => res.json())
       .then(setUsers)
       .catch(console.error);
@@ -58,14 +58,14 @@ function UsersPage() {
   async function createUser(e) {
     e.preventDefault();
     try {
-      await fetch(`${backEndUrl}/user`, {
+      await fetch(`${BACKENDURL}/user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newUser),
       });
       setShowForm(false);
       setNewUser({ full_name: "", email: "", phone: "" });
-      const res = await fetch(`${backEndUrl}/user`);
+      const res = await fetch(`${BACKENDURL}/user`);
       const updatedUsers = await res.json();
       setUsers(updatedUsers);
     } catch (err) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useUserInfo from "../features/common/hooks/useUserInfo";
-import { backEndUrl } from "../config/config";
+import { BACKENDURL } from "../configuration";
 
 const containerStyle = {
   maxWidth: 600,
@@ -56,7 +56,7 @@ function EventsPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${backEndUrl}/event`)
+    fetch(`${BACKENDURL}/event`)
       .then((res) => res.json())
       .then((json) => {
         if (json != null) {
@@ -83,7 +83,7 @@ function EventsPage() {
     try {
       const startISO = new Date(newEvent.start_time).toISOString();
       const endISO = new Date(newEvent.end_time).toISOString();
-      await fetch(`${backEndUrl}/event`, {
+      await fetch(`${BACKENDURL}/event`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -100,7 +100,7 @@ function EventsPage() {
         start_time: "",
         end_time: "",
       });
-      const res = await fetch(`${backEndUrl}/event`);
+      const res = await fetch(`${BACKENDURL}/event`);
       const updatedEvents = await res.json();
       setEvents(updatedEvents);
     } catch (err) {
