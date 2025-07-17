@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import PdfFile from "../features/common/component/PdfFile";
 import { BACKENDURL } from "../configuration";
 import { Ban } from "lucide-react";
 import CheckIn from "./CheckIn";
+import useUserInfo from "../features/common/hooks/useUserInfo";
 
 function ActivitiesPage() {
   const { eventId } = useParams();
-
+  const navigate = useNavigate()
   const [event, setEvent] = useState(null);
   const [activities, setActivities] = useState([]);
   const [attendees, setAttendees] = useState([]);
   const [view, setView] = useState("activities");
 
+
+  const { loading, jwt, user } = useUserInfo()
+
+  // Form state toggles
   const [showAddActivityForm, setShowAddActivityForm] = useState(false);
   const [showAddAttendeeForm, setShowAddAttendeeForm] = useState(false);
+  const [showScanIn, setShowScanIn] = useState(false);
+  // Form data
 
   const [activityForm, setActivityForm] = useState({
     name: "",
@@ -31,7 +38,12 @@ function ActivitiesPage() {
 
   const fetchEventInfo = async () => {
     try {
-      const res = await fetch(`${BACKENDURL}/eventinfo?event_id=${eventId}`);
+      const res = await fetch(`${BACKENDURL}/eventinfo?event_id=${eventId}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        }
+      });
+
       const data = await res.json();
       setEvent(data.event);
       setActivities(data.activities);
@@ -42,7 +54,12 @@ function ActivitiesPage() {
 
   const fetchAttendees = async () => {
     try {
-      const res = await fetch(`${BACKENDURL}/users/${eventId}`);
+      const res = await fetch(`${BACKENDURL}/users/${eventId}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        }
+      });
+
       if (res.ok) {
         const data = await res.json();
         if (data != null) {
@@ -59,7 +76,11 @@ function ActivitiesPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch(`${BACKENDURL}/user`);
+      const res = await fetch(`${BACKENDURL}/user`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        }
+      });
       const data = await res.json();
       if (data != null) {
         setUsers(data);
@@ -70,15 +91,21 @@ function ActivitiesPage() {
   };
 
   useEffect(() => {
+    if (loading) return
     fetchEventInfo();
     fetchUsers();
-  }, [eventId]);
+    fetchAttendees();
+  }, [eventId, loading]);
 
-  useEffect(() => {
-    if (view === "attendees") {
-      fetchAttendees();
-    }
-  }, [view, eventId]);
+  //// When view changes to attendees, fetch attendees fresh
+  //useEffect(() => {
+  //  if (loading) return
+  //  if (view === "attendees") {
+  //    fetchAttendees();
+  //  }
+  //}, [view, eventId, loading]);
+
+
 
   const handleActivityChange = (e) => {
     setActivityForm({ ...activityForm, [e.target.name]: e.target.value });
@@ -95,7 +122,10 @@ function ActivitiesPage() {
       const endISO = new Date(activityForm.end_time).toISOString();
       const res = await fetch(`${BACKENDURL}/activity`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+        Authorization: `Bearer ${jwt}`,
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           ...activityForm,
           start_time: startISO,
@@ -118,7 +148,10 @@ function ActivitiesPage() {
     try {
       const res = await fetch(`${BACKENDURL}/attendees`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
         body: JSON.stringify({ ...attendeeForm, event_id: eventId }),
       });
       if (!res.ok) throw new Error("Failed to add attendee");
@@ -236,10 +269,12 @@ function ActivitiesPage() {
           <h2 className="text-xl font-semibold mb-2">Activities</h2>
           <ul className="list-none p-0">
             {activities?.map((a) => (
-              <li
-                key={a.id}
-                className="mb-3 p-4 border border-gray-200 rounded"
-              >
+
+              <li key={a.id} style={style.listItem} onClick={() => {
+                console.log(a)
+                navigate(`/scan/${a.id}`)
+              }}>
+
                 <strong>{a.name}</strong> – {a.type}
                 <br />
                 Start: {new Date(a.start_time).toLocaleString()}
@@ -275,7 +310,7 @@ function ActivitiesPage() {
                 <option value="">-- Select User --</option>
                 {users.map((u) => (
                   <option key={u.id} value={u.id}>
-                    {u.full_name} ({u.email})
+                    {u.full_name} -- {u.company}
                   </option>
                 ))}
               </select>
@@ -323,7 +358,12 @@ function ActivitiesPage() {
 
       {view === "checkin" && <CheckIn />}
 
-      <Link to="/event" className="underline text-blue-600 block mt-6">
+
+      <Link
+        to="/"
+        style={{ textDecoration: "underline", color: "#2563eb" }}
+      >
+
         ← Back to Events
       </Link>
     </div>

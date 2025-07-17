@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { BACKENDURL } from "../configuration";
+import useUserInfo from "../features/common/hooks/useUserInfo";
 
 export default function CheckIn() {
   const [checkIn, setCheckIn] = useState(null);
@@ -8,17 +9,24 @@ export default function CheckIn() {
   const [editMode, setEditMode] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const { loading: userLoading, jwt } = useUserInfo()
 
   useEffect(() => {
     const fetchCheckIn = async () => {
       setLoading(true);
-      const response = await fetch(`${BACKENDURL}/checkins`);
+
+      if (userLoading || !jwt) return
+      const response = await fetch(`${BACKENDURL}/checkins`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        }
+      });
 
       if (response.ok) {
         const data = await response.json();
         console.log(data);
         setCheckIn(data);
-        setStatus(data.status);
+       // setStatus(data.status);
         setMessage("");
       } else {
         setMessage("Error loading check-in.");
@@ -30,9 +38,14 @@ export default function CheckIn() {
   }, []);
 
   const handleStatusUpdate = async (id) => {
+    if (userLoading || !jwt) {
+      alert("failed")
+      return
+    }
     const response = await fetch(`${BACKENDURL}/checkins/${id}`, {
       method: "PUT",
       headers: {
+        Authorization: `Bearer ${jwt}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({}),
@@ -92,7 +105,7 @@ export default function CheckIn() {
               </p>
               <p>
                 <strong>Scanned By:</strong>
-                {check.scanned_by_name}
+                {check.scanned_by}
               </p>
 
               <p className="flex items-center">

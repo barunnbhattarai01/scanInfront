@@ -5,13 +5,14 @@ import UsersPage from "./page/Userpage";
 import ScanQr from "./features/qr/page/ScanQr";
 import Login from "./features/auth/pages/Login";
 import NavLayout from "./features/common/component/NavLayout";
+
 function App() {
   return (
     <Router>
       <Routes>
         <Route element={<NavLayout />}>
-          <Route path="/" element={<ScanQr />} />
-          <Route path="/event" index element={<EventsPage />} />
+          <Route path="/scan/:activityId" element={<ScanQr />} />
+          <Route path="/" index element={<EventsPage />} />
           <Route path="/users" element={<UsersPage />} />
           <Route path="/activity/:eventId" element={<ActivitiesPage />} />
         </Route>

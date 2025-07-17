@@ -13,7 +13,7 @@ export default function NavLayout() {
         }}
       >
         <Link
-          to="/event"
+          to="/"
           style={{
             marginRight: 10,
             color: "#2563eb",

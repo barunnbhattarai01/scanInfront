@@ -127,6 +127,7 @@ export default function PdfFile({ attendees = [] }) {
   const profileImage =
     "/mnt/data/WhatsApp Image 2025-07-17 at 19.48.46_3ae0b241.jpg";
 
+
   useEffect(() => {
     const generateQRCodes = async () => {
       const dataWithQR = await Promise.all(
@@ -138,6 +139,7 @@ export default function PdfFile({ attendees = [] }) {
       );
       setProcessedAttendees(dataWithQR);
     };
+
 
     if (attendees.length) generateQRCodes();
   }, [attendees]);
