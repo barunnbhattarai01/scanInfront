@@ -1,4 +1,4 @@
-import { useEffect} from "react";
+import { useEffect } from "react";
 import QRScanner from "../components/QrScanner";
 import { useNavigate, useParams } from "react-router-dom";
 import { BACKENDURL } from "../../../configuration";
@@ -6,9 +6,10 @@ import useUserInfo from "../../common/hooks/useUserInfo";
 
 
 function ScanQr() {
-  const { user, loading } = useUserInfo();
+  const { user, loading, jwt } = useUserInfo();
   const { activityId } = useParams();
   const navigate = useNavigate()
+
   useEffect(() => {
     if (loading == false) {
       console.log(user);
@@ -19,15 +20,22 @@ function ScanQr() {
   }, [user, loading]);
 
   async function onClick(attendeeId) {
+    if (loading || !jwt) {
+      alert("errr")
+      return
+    }
     const respose = await fetch(BACKENDURL + "/checkins", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
       body: JSON.stringify({
         attendee_id: attendeeId,
         activity_id: activityId,
         scanned_at: "2025-07-08T15:30:00Z", //todo change to time.now()
         status: "checked",
-        scanned_by: "random person"
+        scanned_by: ""
       }),
     })
     if (respose.ok) {

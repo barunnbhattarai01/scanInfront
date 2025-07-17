@@ -5,6 +5,7 @@ import UsersPage from "./page/Userpage";
 import ScanQr from "./features/qr/page/ScanQr";
 import Login from "./features/auth/pages/Login";
 import NavLayout from "./features/common/component/NavLayout";
+
 function App() {
   return (
     <Router>

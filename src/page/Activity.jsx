@@ -4,6 +4,7 @@ import PdfFile from "../features/common/component/PdfFile";
 import { BACKENDURL } from "../configuration";
 import { Ban } from "lucide-react";
 import CheckIn from "./CheckIn";
+import useUserInfo from "../features/common/hooks/useUserInfo";
 
 const style = {
   container: {
@@ -66,11 +67,12 @@ function ActivitiesPage() {
   const [attendees, setAttendees] = useState([]);
   const [view, setView] = useState("activities");
 
+  const { loading, jwt, user } = useUserInfo()
+
   // Form state toggles
   const [showAddActivityForm, setShowAddActivityForm] = useState(false);
   const [showAddAttendeeForm, setShowAddAttendeeForm] = useState(false);
   const [showScanIn, setShowScanIn] = useState(false);
-
   // Form data
   const [activityForm, setActivityForm] = useState({
     name: "",
@@ -88,7 +90,12 @@ function ActivitiesPage() {
   // Fetch event info and activities
   const fetchEventInfo = async () => {
     try {
-      const res = await fetch(`${BACKENDURL}/eventinfo?event_id=${eventId}`);
+      const res = await fetch(`${BACKENDURL}/eventinfo?event_id=${eventId}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        }
+      });
+
       const data = await res.json();
       setEvent(data.event);
       setActivities(data.activities);
@@ -100,7 +107,12 @@ function ActivitiesPage() {
   // Fetch attendees for event
   const fetchAttendees = async () => {
     try {
-      const res = await fetch(`${BACKENDURL}/users/${eventId}`);
+      const res = await fetch(`${BACKENDURL}/users/${eventId}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        }
+      });
+
       if (res.ok) {
         const data = await res.json();
         if (data != null) {
@@ -118,7 +130,11 @@ function ActivitiesPage() {
   // Fetch users for attendee form select
   const fetchUsers = async () => {
     try {
-      const res = await fetch(`${BACKENDURL}/user`);
+      const res = await fetch(`${BACKENDURL}/user`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        }
+      });
       const data = await res.json();
       if (data != null) {
         setUsers(data);
@@ -130,16 +146,20 @@ function ActivitiesPage() {
 
   // Initial fetch & fetch users
   useEffect(() => {
+    if (loading) return
     fetchEventInfo();
     fetchUsers();
-  }, [eventId]);
+    fetchAttendees();
+  }, [eventId, loading]);
 
-  // When view changes to attendees, fetch attendees fresh
-  useEffect(() => {
-    if (view === "attendees") {
-      fetchAttendees();
-    }
-  }, [view, eventId]);
+  //// When view changes to attendees, fetch attendees fresh
+  //useEffect(() => {
+  //  if (loading) return
+  //  if (view === "attendees") {
+  //    fetchAttendees();
+  //  }
+  //}, [view, eventId, loading]);
+
 
   // Handlers for form inputs
   const handleActivityChange = (e) => {
@@ -158,7 +178,10 @@ function ActivitiesPage() {
       const endISO = new Date(activityForm.end_time).toISOString();
       const res = await fetch(`${BACKENDURL}/activity`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+        Authorization: `Bearer ${jwt}`,
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           ...activityForm,
           start_time: startISO,
@@ -181,7 +204,10 @@ function ActivitiesPage() {
     try {
       const res = await fetch(`${BACKENDURL}/attendees`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
         body: JSON.stringify({ ...attendeeForm, event_id: eventId }),
       });
       if (!res.ok) throw new Error("Failed to add attendee");
@@ -291,8 +317,8 @@ function ActivitiesPage() {
           <h2>Activities</h2>
           <ul style={{ listStyle: "none", padding: 0 }}>
             {activities?.map((a) => (
-              <li key={a.id} style={style.listItem} onClick={()=>{
-                console.log(a) 
+              <li key={a.id} style={style.listItem} onClick={() => {
+                console.log(a)
                 navigate(`/scan/${a.id}`)
               }}>
                 <strong>{a.name}</strong> – {a.type}
@@ -327,7 +353,7 @@ function ActivitiesPage() {
                 <option value="">-- Select User --</option>
                 {users.map((u) => (
                   <option key={u.id} value={u.id}>
-                    {u.full_name} ({u.email})
+                    {u.full_name} -- {u.company}
                   </option>
                 ))}
               </select>
@@ -385,24 +411,3 @@ function ActivitiesPage() {
 
 export default ActivitiesPage;
 
-// (
-//               attendees.map((att) => (
-//                 <li key={att.id} style={style.listItem}>
-//                   <strong>{att.full_name}</strong> — Role: {att.role}
-//                   <br />
-//                   Email: {att.email || att.user_email || "N/A"}
-//                   <br />
-//                   Phone: {att.phone || "N/A"}
-//                   <br />
-//                   <div style={{ marginTop: 10 }}>
-//                     <QRCodeGenerator
-//                       text={JSON.stringify({
-//                         eventId: eventId,
-//                         userId: att.id,
-//                       })}
-//                       size={100}
-//                     />
-//                   </div>
-//                 </li>
-//               ))
-//             )

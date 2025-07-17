@@ -43,7 +43,6 @@ const listItemStyle = {
 function EventsPage() {
   const [events, setEvents] = useState([]);
   const [showForm, setShowForm] = useState(false);
-
   const [newEvent, setNewEvent] = useState({
     name: "",
     description: "",
@@ -52,32 +51,41 @@ function EventsPage() {
     end_time: "",
   });
 
-  const { user, loading } = useUserInfo();
+  const { user, jwt, loading } = useUserInfo();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch(`${BACKENDURL}/event`)
-      .then((res) => res.json())
-      .then((json) => {
-        if (json != null) {
-          setEvents(json);
-        }
-      })
-      .catch(console.error);
-  }, []);
+ 
+useEffect(() => {
+  if (loading) return;
 
-  // to check if the user is already loged in or not
+  if (!user || !jwt) {
+    navigate("/login", { replace: true });
+    return; 
+  }
 
-  useEffect(() => {
-    if (loading == false) {
-      console.log(user);
-
-      if (!user) {
-        navigate("/login", { replace: true });
+  fetch(`${BACKENDURL}/event`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
-    }
-  }, [user, loading]);
+      return res.json();
+    })
+    .then((json) => {
+      if (json != null) {
+        setEvents(json);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}, [loading, jwt]);
 
+  // to check if the user session in valid
+ 
   async function createEvent(e) {
     e.preventDefault();
     try {
@@ -85,7 +93,10 @@ function EventsPage() {
       const endISO = new Date(newEvent.end_time).toISOString();
       await fetch(`${BACKENDURL}/event`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
         body: JSON.stringify({
           ...newEvent,
           start_time: startISO,
@@ -100,7 +111,12 @@ function EventsPage() {
         start_time: "",
         end_time: "",
       });
-      const res = await fetch(`${BACKENDURL}/event`);
+      const res = await fetch(
+        `${BACKENDURL}/event`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        }
+      });
       const updatedEvents = await res.json();
       setEvents(updatedEvents);
     } catch (err) {

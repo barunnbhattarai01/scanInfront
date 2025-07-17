@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { BACKENDURL } from "../configuration";
+import useUserInfo from "../features/common/hooks/useUserInfo";
 
 const containerStyle = {
   maxWidth: 600,
@@ -41,34 +42,53 @@ const listItemStyle = {
 function UsersPage() {
   const [users, setUsers] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const { loading, jwt } = useUserInfo()
+
   const [newUser, setNewUser] = useState({
-    full_name: "",
-    email: "",
-    phone: "",
-    role: "participant",
+    image_url: "nothing for now"
   });
 
   useEffect(() => {
-    fetch(`${BACKENDURL}/user`)
+    if (loading || !jwt) return
+    fetch(`${BACKENDURL}/user`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      }
+
+    })
       .then((res) => res.json())
       .then(setUsers)
       .catch(console.error);
-  }, []);
+
+  }, [loading]);
 
   async function createUser(e) {
     e.preventDefault();
+    if (loading || !jwt) {
+      alert("failed")
+      return
+    }
+
     try {
       await fetch(`${BACKENDURL}/user`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(newUser),
       });
       setShowForm(false);
-      setNewUser({ full_name: "", email: "", phone: "" });
-      const res = await fetch(`${BACKENDURL}/user`);
+      setNewUser({ image_url: "nothing for now" })
+      const res = await fetch(`${BACKENDURL}/user`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        }
+      });
       const updatedUsers = await res.json();
       setUsers(updatedUsers);
     } catch (err) {
+      setUsers([]);
       alert("Failed to create user");
     }
   }
@@ -91,16 +111,16 @@ function UsersPage() {
             style={inputStyle}
           />
           <input
-            placeholder="Email"
-            value={newUser.email}
-            onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+            placeholder="Company"
+            value={newUser.company}
+            onChange={(e) => setNewUser({ ...newUser, company: e.target.value })}
             required
             style={inputStyle}
           />
           <input
-            placeholder="Phone"
-            value={newUser.phone}
-            onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })}
+            placeholder="Position"
+            value={newUser.position}
+            onChange={(e) => setNewUser({ ...newUser, position: e.target.value })}
             style={inputStyle}
           />
           <div>
@@ -120,8 +140,13 @@ function UsersPage() {
 
       <ul style={{ marginTop: 20, paddingLeft: 0, listStyle: "none" }}>
         {users?.map((u) => (
-          <li key={u.id} style={listItemStyle}>
-            {u.full_name}
+          <li key={u.id} style={listItemStyle} className="flex w-full justify-between">
+            <div>
+              {u.full_name}
+            </div>
+            <div>
+              {u.auto_id}
+            </div>
           </li>
         ))}
       </ul>
