@@ -5,59 +5,6 @@ import { BACKENDURL } from "../configuration";
 import { Ban } from "lucide-react";
 import CheckIn from "./CheckIn";
 
-const style = {
-  container: {
-    maxWidth: 600,
-    margin: "20px auto",
-    padding: 20,
-    fontFamily: "Arial, sans-serif",
-  },
-  toggleContainer: {
-    display: "flex",
-    gap: 10,
-    marginBottom: 20,
-  },
-  toggleButton: (active) => ({
-    padding: "8px 16px",
-    cursor: "pointer",
-    borderRadius: 4,
-    border: "1px solid #2563eb",
-    backgroundColor: active ? "#2563eb" : "white",
-    color: active ? "white" : "#2563eb",
-    fontWeight: active ? "bold" : "normal",
-  }),
-  button: {
-    padding: "8px 12px",
-    backgroundColor: "#2563eb",
-    color: "white",
-    border: "none",
-    borderRadius: 4,
-    cursor: "pointer",
-    marginBottom: 20,
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 10,
-    marginBottom: 20,
-    padding: 10,
-    border: "1px solid #ccc",
-    borderRadius: 4,
-  },
-  input: {
-    padding: 8,
-    borderRadius: 4,
-    border: "1px solid #ccc",
-    fontSize: 16,
-  },
-  listItem: {
-    marginBottom: 10,
-    padding: 10,
-    border: "1px solid #ddd",
-    borderRadius: 4,
-  },
-};
-
 function ActivitiesPage() {
   const { eventId } = useParams();
 
@@ -66,12 +13,9 @@ function ActivitiesPage() {
   const [attendees, setAttendees] = useState([]);
   const [view, setView] = useState("activities");
 
-  // Form state toggles
   const [showAddActivityForm, setShowAddActivityForm] = useState(false);
   const [showAddAttendeeForm, setShowAddAttendeeForm] = useState(false);
-  const [showScanIn, setShowScanIn] = useState(false);
 
-  // Form data
   const [activityForm, setActivityForm] = useState({
     name: "",
     type: "",
@@ -85,7 +29,6 @@ function ActivitiesPage() {
 
   const [users, setUsers] = useState([]);
 
-  // Fetch event info and activities
   const fetchEventInfo = async () => {
     try {
       const res = await fetch(`${BACKENDURL}/eventinfo?event_id=${eventId}`);
@@ -97,7 +40,6 @@ function ActivitiesPage() {
     }
   };
 
-  // Fetch attendees for event
   const fetchAttendees = async () => {
     try {
       const res = await fetch(`${BACKENDURL}/users/${eventId}`);
@@ -115,7 +57,6 @@ function ActivitiesPage() {
     }
   };
 
-  // Fetch users for attendee form select
   const fetchUsers = async () => {
     try {
       const res = await fetch(`${BACKENDURL}/user`);
@@ -128,20 +69,17 @@ function ActivitiesPage() {
     }
   };
 
-  // Initial fetch & fetch users
   useEffect(() => {
     fetchEventInfo();
     fetchUsers();
   }, [eventId]);
 
-  // When view changes to attendees, fetch attendees fresh
   useEffect(() => {
     if (view === "attendees") {
       fetchAttendees();
     }
   }, [view, eventId]);
 
-  // Handlers for form inputs
   const handleActivityChange = (e) => {
     setActivityForm({ ...activityForm, [e.target.name]: e.target.value });
   };
@@ -150,7 +88,6 @@ function ActivitiesPage() {
     setAttendeeForm({ ...attendeeForm, [e.target.name]: e.target.value });
   };
 
-  // Submit new activity
   const handleAddActivity = async (e) => {
     e.preventDefault();
     try {
@@ -195,68 +132,73 @@ function ActivitiesPage() {
   };
 
   return (
-    <div style={style.container}>
+    <div className="max-w-xl mx-auto p-5 font-sans">
       {event && (
         <>
-          <h1>{event.name}</h1>
-          <p>{event.description}</p>
+          <h1 className="text-2xl font-bold">{event.name}</h1>
+          <p className="text-gray-600">{event.description}</p>
         </>
       )}
 
-      {/* Toggle Activities / Attendees */}
-      <div style={style.toggleContainer}>
+      {/* Toggle Activities / Attendees/ checkin */}
+      <div className="flex gap-2 mb-5">
         <button
-          style={style.toggleButton(view === "activities")}
-          onClick={() => {
-            setView("activities");
-            // setShowAddActivityForm(false);
-            // setShowAddAttendeeForm(false);
-          }}
+          className={`px-4 py-2 border border-blue-600 rounded ${
+            view === "activities"
+              ? "bg-blue-600 text-white font-bold"
+              : "bg-white text-blue-600"
+          }`}
+          onClick={() => setView("activities")}
         >
           Activities
         </button>
         <button
-          style={style.toggleButton(view === "attendees")}
-          onClick={() => {
-            setView("attendees");
-            // setShowAddActivityForm(false);
-            // setShowAddAttendeeForm(false);
-          }}
+          className={`px-4 py-2 border border-blue-600 rounded ${
+            view === "attendees"
+              ? "bg-blue-600 text-white font-bold"
+              : "bg-white text-blue-600"
+          }`}
+          onClick={() => setView("attendees")}
         >
           Attendees
         </button>
-
         <button
-          style={style.toggleButton(view === "checkin")}
+          className={`px-4 py-2 border border-blue-600 rounded ${
+            view === "checkin"
+              ? "bg-blue-600 text-white font-bold"
+              : "bg-white text-blue-600"
+          }`}
           onClick={() => {
             setView("checkin");
-            setShowAddActivityForm(false);
-            setShowAddAttendeeForm(false);
+            // setShowAddActivityForm(false);
+            // setShowAddAttendeeForm(false);
           }}
         >
           Check In
         </button>
       </div>
 
-      {/* Show Add button and form conditionally */}
       {view === "activities" && (
         <>
           <button
-            style={style.button}
+            className="mb-4 px-4 py-2 bg-blue-600 text-white rounded"
             onClick={() => setShowAddActivityForm((v) => !v)}
           >
             {showAddActivityForm ? "Cancel Add Activity" : "Add Activity"}
           </button>
 
           {showAddActivityForm && (
-            <form onSubmit={handleAddActivity} style={style.form}>
+            <form
+              onSubmit={handleAddActivity}
+              className="flex flex-col gap-3 p-4 border border-gray-300 rounded mb-5"
+            >
               <input
                 name="name"
                 placeholder="Activity Name"
                 value={activityForm.name}
                 onChange={handleActivityChange}
                 required
-                style={style.input}
+                className="p-2 border border-gray-300 rounded text-base"
               />
               <input
                 name="type"
@@ -264,7 +206,7 @@ function ActivitiesPage() {
                 value={activityForm.type}
                 onChange={handleActivityChange}
                 required
-                style={style.input}
+                className="p-2 border border-gray-300 rounded text-base"
               />
               <input
                 name="start_time"
@@ -272,7 +214,7 @@ function ActivitiesPage() {
                 value={activityForm.start_time}
                 onChange={handleActivityChange}
                 required
-                style={style.input}
+                className="p-2 border border-gray-300 rounded text-base"
               />
               <input
                 name="end_time"
@@ -280,18 +222,24 @@ function ActivitiesPage() {
                 value={activityForm.end_time}
                 onChange={handleActivityChange}
                 required
-                style={style.input}
+                className="p-2 border border-gray-300 rounded text-base"
               />
-              <button type="submit" style={style.button}>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-600 text-white rounded"
+              >
                 Submit Activity
               </button>
             </form>
           )}
 
-          <h2>Activities</h2>
-          <ul style={{ listStyle: "none", padding: 0 }}>
+          <h2 className="text-xl font-semibold mb-2">Activities</h2>
+          <ul className="list-none p-0">
             {activities?.map((a) => (
-              <li key={a.id} style={style.listItem}>
+              <li
+                key={a.id}
+                className="mb-3 p-4 border border-gray-200 rounded"
+              >
                 <strong>{a.name}</strong> – {a.type}
                 <br />
                 Start: {new Date(a.start_time).toLocaleString()}
@@ -306,20 +254,23 @@ function ActivitiesPage() {
       {view === "attendees" && (
         <>
           <button
-            style={style.button}
+            className="mb-4 px-4 py-2 bg-blue-600 text-white rounded"
             onClick={() => setShowAddAttendeeForm((v) => !v)}
           >
             {showAddAttendeeForm ? "Cancel Add Attendee" : "Add Attendee"}
           </button>
 
           {showAddAttendeeForm && (
-            <form onSubmit={handleAddAttendee} style={style.form}>
+            <form
+              onSubmit={handleAddAttendee}
+              className="flex flex-col gap-3 p-4 border border-gray-300 rounded mb-5"
+            >
               <select
                 name="user_id"
                 value={attendeeForm.user_id}
                 onChange={handleAttendeeChange}
                 required
-                style={style.input}
+                className="p-2 border border-gray-300 rounded text-base"
               >
                 <option value="">-- Select User --</option>
                 {users.map((u) => (
@@ -334,33 +285,35 @@ function ActivitiesPage() {
                 value={attendeeForm.role}
                 onChange={handleAttendeeChange}
                 required
-                style={style.input}
+                className="p-2 border border-gray-300 rounded text-base"
               >
                 <option value="participant">Participant</option>
                 <option value="staff">Staff</option>
                 <option value="member">Member</option>
               </select>
 
-              <button type="submit" style={style.button}>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-600 text-white rounded"
+              >
                 Submit Attendee
               </button>
             </form>
           )}
 
-          <h2>Attendees</h2>
-          <ul style={{ listStyle: "none", padding: 0 }}>
+          <h2 className="text-xl font-semibold mb-2">Attendees</h2>
+          <ul className="list-none p-0">
             {attendees.length > 0 ? (
-              attendees.map((att) => (
-                <PdfFile
-                  eventId={eventId}
-                  attendee_id={att.attendee_id}
-                  key={att.id}
-                  email={att.email || att.user_email || "N/A"}
-                  username={att.full_name}
-                  role={att.role}
-                  phone={att.phone}
-                />
-              ))
+              <PdfFile
+                attendees={attendees.map((att) => ({
+                  eventId,
+                  attendee_id: att.attendee_id,
+                  email: att.email || att.user_email || "N/A",
+                  username: att.full_name,
+                  role: att.role,
+                  phone: att.phone,
+                }))}
+              />
             ) : (
               <li>No attendees found.</li>
             )}
@@ -370,10 +323,7 @@ function ActivitiesPage() {
 
       {view === "checkin" && <CheckIn />}
 
-      <Link
-        to="/event"
-        style={{ textDecoration: "underline", color: "#2563eb" }}
-      >
+      <Link to="/event" className="underline text-blue-600 block mt-6">
         ← Back to Events
       </Link>
     </div>
@@ -381,25 +331,3 @@ function ActivitiesPage() {
 }
 
 export default ActivitiesPage;
-
-// (
-//               attendees.map((att) => (
-//                 <li key={att.id} style={style.listItem}>
-//                   <strong>{att.full_name}</strong> — Role: {att.role}
-//                   <br />
-//                   Email: {att.email || att.user_email || "N/A"}
-//                   <br />
-//                   Phone: {att.phone || "N/A"}
-//                   <br />
-//                   <div style={{ marginTop: 10 }}>
-//                     <QRCodeGenerator
-//                       text={JSON.stringify({
-//                         eventId: eventId,
-//                         userId: att.id,
-//                       })}
-//                       size={100}
-//                     />
-//                   </div>
-//                 </li>
-//               ))
-//             )

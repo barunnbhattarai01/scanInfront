@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import QRScanner from "../components/QrScanner";
 import useUserInfo from "../../common/hooks/useUserInfo";
+import { useNavigate } from "react-router-dom";
 
 function ScanQr() {
   const [scannedText, setScannedText] = useState("");
   const { user, loading } = useUserInfo();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (loading == false) {
