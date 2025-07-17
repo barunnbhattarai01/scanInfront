@@ -2,6 +2,42 @@ import { useEffect, useState } from "react";
 import { BACKENDURL } from "../configuration";
 import useUserInfo from "../features/common/hooks/useUserInfo";
 
+const containerStyle = {
+  maxWidth: 600,
+  margin: "20px auto",
+  padding: 20,
+  border: "1px solid #ccc",
+  borderRadius: 6,
+  backgroundColor: "#f9f9f9",
+};
+
+const formStyle = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+  marginTop: 10,
+};
+
+const inputStyle = {
+  padding: 8,
+  borderRadius: 4,
+  border: "1px solid #ccc",
+  fontSize: 16,
+};
+
+const buttonStyle = {
+  padding: "10px 15px",
+  backgroundColor: "#2563eb",
+  color: "white",
+  border: "none",
+  borderRadius: 4,
+  cursor: "pointer",
+};
+
+const listItemStyle = {
+  borderBottom: "1px solid #ddd",
+  padding: "8px 0",
+};
 function UsersPage() {
   const [users, setUsers] = useState([]);
   const [showForm, setShowForm] = useState(false);
