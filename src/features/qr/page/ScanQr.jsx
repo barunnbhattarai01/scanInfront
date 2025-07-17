@@ -3,7 +3,6 @@ import QRScanner from "../components/QrScanner";
 import { useNavigate, useParams } from "react-router-dom";
 import { BACKENDURL } from "../../../configuration";
 import useUserInfo from "../../common/hooks/useUserInfo";
-import { useNavigate } from "react-router-dom";
 
 
 function ScanQr() {
