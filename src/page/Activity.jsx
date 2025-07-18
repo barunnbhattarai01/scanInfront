@@ -60,14 +60,13 @@ const style = {
 
 function ActivitiesPage() {
   const { eventId } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [activities, setActivities] = useState([]);
   const [attendees, setAttendees] = useState([]);
   const [view, setView] = useState("activities");
 
-
-  const { loading, jwt, user } = useUserInfo()
+  const { loading, jwt, user } = useUserInfo();
 
   // Form state toggles
   const [showAddActivityForm, setShowAddActivityForm] = useState(false);
@@ -93,7 +92,7 @@ function ActivitiesPage() {
       const res = await fetch(`${BACKENDURL}/eventinfo?event_id=${eventId}`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
-        }
+        },
       });
 
       const data = await res.json();
@@ -109,12 +108,13 @@ function ActivitiesPage() {
       const res = await fetch(`${BACKENDURL}/users/${eventId}`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
-        }
+        },
       });
 
       if (res.ok) {
         const data = await res.json();
         if (data != null) {
+          console.log(data);
           setAttendees(data);
         }
       } else {
@@ -131,7 +131,7 @@ function ActivitiesPage() {
       const res = await fetch(`${BACKENDURL}/user`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
-        }
+        },
       });
       const data = await res.json();
       if (data != null) {
@@ -143,7 +143,7 @@ function ActivitiesPage() {
   };
 
   useEffect(() => {
-    if (loading) return
+    if (loading) return;
     fetchEventInfo();
     fetchUsers();
     fetchAttendees();
@@ -156,8 +156,6 @@ function ActivitiesPage() {
   //    fetchAttendees();
   //  }
   //}, [view, eventId, loading]);
-
-
 
   const handleActivityChange = (e) => {
     setActivityForm({ ...activityForm, [e.target.name]: e.target.value });
@@ -175,8 +173,8 @@ function ActivitiesPage() {
       const res = await fetch(`${BACKENDURL}/activity`, {
         method: "POST",
         headers: {
-        Authorization: `Bearer ${jwt}`,
-          "Content-Type": "application/json"
+          Authorization: `Bearer ${jwt}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...activityForm,
@@ -321,12 +319,14 @@ function ActivitiesPage() {
           <h2 className="text-xl font-semibold mb-2">Activities</h2>
           <ul className="list-none p-0">
             {activities?.map((a) => (
-
-              <li key={a.id} style={style.listItem} onClick={() => {
-                console.log(a)
-                navigate(`/scan/${a.id}`)
-              }}>
-
+              <li
+                key={a.id}
+                style={style.listItem}
+                onClick={() => {
+                  console.log(a);
+                  navigate(`/scan/${a.id}`);
+                }}
+              >
                 <strong>{a.name}</strong> – {a.type}
                 <br />
                 Start: {new Date(a.start_time).toLocaleString()}
@@ -399,6 +399,7 @@ function ActivitiesPage() {
                   username: att.full_name,
                   role: att.role,
                   phone: att.phone,
+                  image_url: att.image_url,
                 }))}
               />
             ) : (
@@ -410,12 +411,7 @@ function ActivitiesPage() {
 
       {view === "checkin" && <CheckIn />}
 
-
-      <Link
-        to="/"
-        style={{ textDecoration: "underline", color: "#2563eb" }}
-      >
-
+      <Link to="/" style={{ textDecoration: "underline", color: "#2563eb" }}>
         ← Back to Events
       </Link>
     </div>

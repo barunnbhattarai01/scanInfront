@@ -41,49 +41,48 @@ const listItemStyle = {
 function UsersPage() {
   const [users, setUsers] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const { loading, jwt } = useUserInfo()
+  const { loading, jwt } = useUserInfo();
 
   const [newUser, setNewUser] = useState({
-    image_url: "nothing for now"
+    image_url: "",
   });
   const [img, setimg] = useState("");
 
   useEffect(() => {
-    if (loading || !jwt) return
+    if (loading || !jwt) return;
     fetch(`${BACKENDURL}/user`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
-      }
-
+      },
     })
       .then((res) => res.json())
       .then(setUsers)
       .catch(console.error);
-
   }, [loading]);
 
   async function createUser(e) {
     e.preventDefault();
     if (loading || !jwt) {
-      alert("failed")
-      return
+      alert("failed");
+      return;
     }
 
     try {
+      console.log(newUser);
       await fetch(`${BACKENDURL}/user`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${jwt}`,
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(newUser),
       });
       setShowForm(false);
-      setNewUser({ image_url: "nothing for now" })
+      setNewUser({ image_url: "nothing for now" });
       const res = await fetch(`${BACKENDURL}/user`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
-        }
+        },
       });
       const updatedUsers = await res.json();
       setUsers(updatedUsers);
@@ -112,7 +111,13 @@ function UsersPage() {
       }
     );
     const imagesurl = await res.json();
-    setimg(imagesurl.url);
+    setNewUser((pre) => {
+      return {
+        ...pre,
+        image_url: imagesurl.url,
+      };
+    });
+    console.log(imagesurl.url);
   };
 
   return (
@@ -140,14 +145,18 @@ function UsersPage() {
           <input
             placeholder="Company"
             value={newUser.company}
-            onChange={(e) => setNewUser({ ...newUser, company: e.target.value })}
+            onChange={(e) =>
+              setNewUser({ ...newUser, company: e.target.value })
+            }
             required
             className="p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
           <input
             placeholder="Position"
             value={newUser.position}
-            onChange={(e) => setNewUser({ ...newUser, position: e.target.value })}
+            onChange={(e) =>
+              setNewUser({ ...newUser, position: e.target.value })
+            }
             style={inputStyle}
           />
 
@@ -184,14 +193,13 @@ function UsersPage() {
 
       <ul className="mt-6 list-none pl-0">
         {users?.map((u) => (
-
-          <li key={u.id} style={listItemStyle} className="flex w-full justify-between">
-            <div>
-              {u.full_name}
-            </div>
-            <div>
-              {u.auto_id}
-            </div>
+          <li
+            key={u.id}
+            style={listItemStyle}
+            className="flex w-full justify-between"
+          >
+            <div>{u.full_name}</div>
+            <div>{u.auto_id}</div>
           </li>
         ))}
       </ul>
