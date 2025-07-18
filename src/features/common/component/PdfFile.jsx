@@ -45,13 +45,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   profileImage: {
-    width: "80px",
-    height: "70px",
+
+    width: "93.6px",
+    height: "74.4px",
+    borderRadius: "0",
+
     marginBottom: "5px",
   },
   qrCode: {
-    width: "90px",
-    height: "90px",
+    width: "80px",
+    height: "80px",
   },
   infoText: {
     fontSize: 8,
@@ -65,8 +68,10 @@ const styles = StyleSheet.create({
     fontSize: 8,
     textAlign: "center",
     fontWeight: "800",
+
     marginLeft: "31px",
     marginTop: "-10px",
+
   },
 });
 
@@ -106,7 +111,7 @@ const PdfDocument = ({ attendees }) => {
 
                     <View style={styles.qrandtext}>
                       <Image src={att?.qrUrl} style={styles.qrCode} />
-                      <Text style={styles.forInv}>INV-005</Text>
+                      <Text style={styles.forInv}>{att?.role}-{att?.auto_id}</Text>
                     </View>
                   </View>
                 </>
@@ -121,7 +126,6 @@ const PdfDocument = ({ attendees }) => {
   );
 };
 
-// Main component
 export default function PdfFile({ attendees = [] }) {
   const [processedAttendees, setProcessedAttendees] = useState([]);
   const [pdfUrl, setPdfUrl] = useState(null);
@@ -137,16 +141,17 @@ export default function PdfFile({ attendees = [] }) {
     );
 
     const generateQRCodes = async () => {
-      setIsGenerating(true);
-      try {
-        const dataWithQR = await Promise.all(
-          attendees.map(async (att, idx) => {
-            const qrText = `INV-${String(idx + 1).padStart(3, "0")}`;
-            const qrUrl = await QRCode.toDataURL(qrText);
-            return { ...att, qrUrl, invoice: qrText };
-          })
-        );
-        setProcessedAttendees(dataWithQR);
+
+      const dataWithQR = await Promise.all(
+        attendees.map(async (att, idx) => {
+          console.log(att)
+          const qrText = `INV-${att.auto_id}`;
+          const qrUrl = await QRCode.toDataURL(att.attendee_id);
+          return { ...att, qrUrl, invoice: qrText };
+        })
+      );
+      setProcessedAttendees(dataWithQR);
+    };
 
         // Generate PDF blob for react-pdf viewer
         if (dataWithQR.length > 0) {
@@ -219,5 +224,5 @@ export default function PdfFile({ attendees = [] }) {
         </p>
       )}
     </div>
-  );
+  )
 }
