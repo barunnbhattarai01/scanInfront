@@ -67,5 +67,7 @@ export default function NavLayout() {
       </div>
       <Outlet />
     </>
+
   );
 }
+

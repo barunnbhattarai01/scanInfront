@@ -44,14 +44,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   profileImage: {
-    width: "80px",
-    height: "70px",
+    width: "93.6px",
+    height: "74.4px",
     borderRadius: "0",
     marginBottom: "5px",
   },
   qrCode: {
-    width: "90px",
-    height: "90px",
+    width: "80px",
+    height: "80px",
   },
   infoText: {
     fontSize: 8,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     fontSize: 8,
     textAlign: "center",
     fontWeight: "800",
-    marginLeft: "25px",
+    marginLeft: "15px",
     marginTop: "-5px",
   },
 });
@@ -106,7 +106,7 @@ const PdfDocument = ({ attendees, profileImage }) => {
 
                     <View>
                       <Image src={att?.qrUrl} style={styles.qrCode} />
-                      <Text style={styles.forInv}>INV-005</Text>
+                      <Text style={styles.forInv}>{att?.role}-{att?.auto_id}</Text>
                     </View>
                   </View>
                 </>
@@ -121,7 +121,6 @@ const PdfDocument = ({ attendees, profileImage }) => {
   );
 };
 
-// Main component
 export default function PdfFile({ attendees = [] }) {
   const [processedAttendees, setProcessedAttendees] = useState([]);
   const profileImage =
@@ -132,8 +131,9 @@ export default function PdfFile({ attendees = [] }) {
     const generateQRCodes = async () => {
       const dataWithQR = await Promise.all(
         attendees.map(async (att, idx) => {
-          const qrText = `INV-${String(idx + 1).padStart(3, "0")}`;
-          const qrUrl = await QRCode.toDataURL(qrText);
+          console.log(att)
+          const qrText = `INV-${att.auto_id}`;
+          const qrUrl = await QRCode.toDataURL(att.attendee_id);
           return { ...att, qrUrl, invoice: qrText };
         })
       );
@@ -164,5 +164,5 @@ export default function PdfFile({ attendees = [] }) {
         )}
       </PDFDownloadLink>
     </div>
-  );
+  )
 }

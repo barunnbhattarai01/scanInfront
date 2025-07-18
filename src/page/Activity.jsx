@@ -395,10 +395,10 @@ function ActivitiesPage() {
                 attendees={attendees.map((att) => ({
                   eventId,
                   attendee_id: att.attendee_id,
-                  email: att.email || att.user_email || "N/A",
                   username: att.full_name,
                   role: att.role,
                   phone: att.phone,
+                  auto_id:att.auto_id
                 }))}
               />
             ) : (
