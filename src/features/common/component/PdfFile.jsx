@@ -133,7 +133,7 @@ export default function PdfFile({ attendees = [] }) {
       const dataWithQR = await Promise.all(
         attendees.map(async (att, idx) => {
           const qrText = `INV-${String(idx + 1).padStart(3, "0")}`;
-          const qrUrl = await QRCode.toDataURL(qrText);
+          const qrUrl = await QRCode.toDataURL(att.attendee_id);
           return { ...att, qrUrl, invoice: qrText };
         })
       );
@@ -164,5 +164,5 @@ export default function PdfFile({ attendees = [] }) {
         )}
       </PDFDownloadLink>
     </div>
-  );
+  )
 }
