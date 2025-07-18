@@ -54,38 +54,37 @@ function EventsPage() {
   const { user, jwt, loading } = useUserInfo();
   const navigate = useNavigate();
 
- 
-useEffect(() => {
-  if (loading) return;
+  useEffect(() => {
+    if (loading) return;
 
-  if (!user || !jwt) {
-    navigate("/login", { replace: true });
-    return; 
-  }
+    if (!user || !jwt) {
+      navigate("/login", { replace: true });
+      return;
+    }
 
-  fetch(`${BACKENDURL}/event`, {
-    headers: {
-      Authorization: `Bearer ${jwt}`,
-    },
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      return res.json();
+    fetch(`${BACKENDURL}/event`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
     })
-    .then((json) => {
-      if (json != null) {
-        setEvents(json);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-}, [loading, jwt]);
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((json) => {
+        if (json != null) {
+          setEvents(json);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [loading, jwt]);
 
   // to check if the user session in valid
- 
+
   async function createEvent(e) {
     e.preventDefault();
     try {
@@ -111,11 +110,10 @@ useEffect(() => {
         start_time: "",
         end_time: "",
       });
-      const res = await fetch(
-        `${BACKENDURL}/event`, {
+      const res = await fetch(`${BACKENDURL}/event`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
-        }
+        },
       });
       const updatedEvents = await res.json();
       setEvents(updatedEvents);

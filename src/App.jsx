@@ -12,8 +12,9 @@ function App() {
       <Routes>
         <Route element={<NavLayout />}>
           <Route path="/scan/:activityId" element={<ScanQr />} />
-          <Route path="/" index element={<EventsPage />} />
+          <Route path="/" index element={<ScanQr />} />
           <Route path="/users" element={<UsersPage />} />
+          <Route path="/event" element={<EventsPage />} />
           <Route path="/activity/:eventId" element={<ActivitiesPage />} />
         </Route>
 
