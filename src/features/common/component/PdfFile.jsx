@@ -107,7 +107,7 @@ const PdfDocument = ({ attendees, profileImage }) => {
 
                     <View style={styles.qrandtext}>
                       <Image src={att?.qrUrl} style={styles.qrCode} />
-                      <Text style={styles.forInv}>INV-005</Text>
+                      <Text style={styles.forInv}>{att?.role}-{att?.auto_id}</Text>
                     </View>
                   </View>
                 </>
@@ -132,8 +132,9 @@ export default function PdfFile({ attendees = [] }) {
     const generateQRCodes = async () => {
       const dataWithQR = await Promise.all(
         attendees.map(async (att, idx) => {
-          const qrText = `INV-${String(idx + 1).padStart(3, "0")}`;
-          const qrUrl = await QRCode.toDataURL(qrText);
+          console.log(att)
+          const qrText = `${String(idx + 1).padStart(3, "0")}`;
+          const qrUrl = await QRCode.toDataURL(att.attendee_id);
           return { ...att, qrUrl, invoice: qrText };
         })
       );

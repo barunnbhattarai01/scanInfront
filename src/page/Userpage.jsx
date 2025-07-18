@@ -45,6 +45,7 @@ function UsersPage() {
 
   const [newUser, setNewUser] = useState({
     image_url: "",
+    role: "INV",
   });
   const [img, setimg] = useState("");
 
@@ -159,7 +160,14 @@ function UsersPage() {
             }
             style={inputStyle}
           />
-
+          <input
+            placeholder="Role"
+            value={newUser.role}
+            onChange={(e) =>
+              setNewUser({ ...newUser, position: e.target.value })
+            }
+            style={inputStyle}
+          />
           {/* file upload */}
 
           <div>
@@ -199,7 +207,10 @@ function UsersPage() {
             className="flex w-full justify-between"
           >
             <div>{u.full_name}</div>
-            <div>{u.auto_id}</div>
+            <div>
+              {u.role}-
+              {u.auto_id}
+            </div>
           </li>
         ))}
       </ul>
