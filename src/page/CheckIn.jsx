@@ -95,7 +95,7 @@ export default function CheckIn() {
     <div className="flex flex-col w-full">
       <h2 className="text-2xl font-bold text-center">Check-In Details</h2>
       {message && (
-        <div className="text-center text-red-500 font-semibold mt-2">
+        <div className="text-center text-green-500 font-semibold mt-2">
           {message}
         </div>
       )}
