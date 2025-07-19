@@ -42,6 +42,7 @@ function UsersPage() {
   const [users, setUsers] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const { loading, jwt } = useUserInfo();
+  const [load, setLoad] = useState(false);
 
   const [newUser, setNewUser] = useState({
     image_url: "",
@@ -95,6 +96,7 @@ function UsersPage() {
   //uploading images
 
   const handleimage = async (e) => {
+    setLoad(true);
     e.preventDefault();
     const file = e.target.files[0];
     //  console.log(file);
@@ -119,6 +121,7 @@ function UsersPage() {
       };
     });
     console.log(imagesurl.url);
+    setLoad(false);
   };
 
   return (
@@ -163,9 +166,7 @@ function UsersPage() {
           <input
             placeholder="Role"
             value={newUser.role}
-            onChange={(e) =>
-              setNewUser({ ...newUser, position: e.target.value })
-            }
+            onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
             style={inputStyle}
           />
           {/* file upload */}
@@ -182,12 +183,16 @@ function UsersPage() {
           </div>
 
           <div className="flex gap-4">
-            <button
-              type="submit"
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition"
-            >
-              Save
-            </button>
+            {load == false ? (
+              <button
+                type="submit"
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition"
+              >
+                Save
+              </button>
+            ) : (
+              <p>Loading...</p>
+            )}
             <button
               type="button"
               className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition"
@@ -208,8 +213,7 @@ function UsersPage() {
           >
             <div>{u.full_name}</div>
             <div>
-              {u.role}-
-              {u.auto_id}
+              {u.role}-{u.auto_id}
             </div>
           </li>
         ))}

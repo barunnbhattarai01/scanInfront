@@ -3,43 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import useUserInfo from "../features/common/hooks/useUserInfo";
 import { BACKENDURL } from "../configuration";
 
-const containerStyle = {
-  maxWidth: 600,
-  margin: "20px auto",
-  padding: 20,
-  border: "1px solid #ccc",
-  borderRadius: 6,
-  backgroundColor: "#f9f9f9",
-};
-
-const formStyle = {
-  display: "flex",
-  flexDirection: "column",
-  gap: 10,
-  marginTop: 10,
-};
-
-const inputStyle = {
-  padding: 8,
-  borderRadius: 4,
-  border: "1px solid #ccc",
-  fontSize: 16,
-};
-
-const buttonStyle = {
-  padding: "8px 12px",
-  backgroundColor: "#2563eb",
-  color: "white",
-  border: "none",
-  borderRadius: 4,
-  cursor: "pointer",
-};
-
-const listItemStyle = {
-  borderBottom: "1px solid #ddd",
-  padding: "12px 0",
-};
-
 function EventsPage() {
   const [events, setEvents] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -61,6 +24,7 @@ function EventsPage() {
       navigate("/login", { replace: true });
       return;
     }
+    console.log(jwt);
 
     fetch(`${BACKENDURL}/event`, {
       headers: {
@@ -124,21 +88,22 @@ function EventsPage() {
   }
 
   return (
-    <div style={containerStyle}>
-      <h1>Events</h1>
-
-      <button style={buttonStyle} onClick={() => setShowForm(true)}>
+    <div className="w-max-130 md:w-180 mx-auto mt-5 p-5 border border-gray-300 rounded-md bg-gray-100">
+      <button
+        className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        onClick={() => setShowForm(true)}
+      >
         Create Event
       </button>
 
       {showForm && (
-        <form onSubmit={createEvent} style={formStyle}>
+        <form onSubmit={createEvent} className="flex flex-col gap-3 mt-3">
           <input
             placeholder="Name"
             value={newEvent.name}
             onChange={(e) => setNewEvent({ ...newEvent, name: e.target.value })}
             required
-            style={inputStyle}
+            className="p-2 rounded-md border border-gray-300 text-lg"
           />
           <input
             placeholder="Description"
@@ -146,7 +111,7 @@ function EventsPage() {
             onChange={(e) =>
               setNewEvent({ ...newEvent, description: e.target.value })
             }
-            style={inputStyle}
+            className="p-2 rounded-md border border-gray-300 text-lg"
           />
           <input
             placeholder="Location"
@@ -154,9 +119,8 @@ function EventsPage() {
             onChange={(e) =>
               setNewEvent({ ...newEvent, location: e.target.value })
             }
-            style={inputStyle}
+            className="p-2 rounded-md border border-gray-300 text-lg"
           />
-
           <input
             type="datetime-local"
             value={newEvent.start_time}
@@ -164,7 +128,7 @@ function EventsPage() {
               setNewEvent({ ...newEvent, start_time: e.target.value })
             }
             required
-            style={inputStyle}
+            className="p-2 rounded-md border border-gray-300 text-lg"
           />
           <input
             type="datetime-local"
@@ -172,15 +136,27 @@ function EventsPage() {
             onChange={(e) =>
               setNewEvent({ ...newEvent, end_time: e.target.value })
             }
-            style={inputStyle}
+            className="p-2 rounded-md border border-gray-300 text-lg"
+          />
+          <input
+            type="text"
+            value={newEvent.organizer}
+            placeholder="Name of the Organizer"
+            onChange={(e) =>
+              setNewEvent({ ...newEvent, organizer: e.target.value })
+            }
+            className="p-2 rounded-md border border-gray-300 text-lg"
           />
           <div>
-            <button type="submit" style={{ ...buttonStyle, marginRight: 10 }}>
+            <button
+              type="submit"
+              className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 mr-2"
+            >
               Save
             </button>
             <button
               type="button"
-              style={{ ...buttonStyle, backgroundColor: "#999" }}
+              className="px-3 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
               onClick={() => setShowForm(false)}
             >
               Cancel
@@ -189,23 +165,42 @@ function EventsPage() {
         </form>
       )}
 
-      <ul style={{ marginTop: 20, paddingLeft: 0, listStyle: "none" }}>
-        {events.map((e) => (
-          <li key={e.id} style={listItemStyle}>
-            <div style={{ fontWeight: "bold" }}>
-              {e.name} – {e.location}
+      <div className="mt-5 pl-0 w-full">
+        {events?.map((e) => (
+          <div
+            key={e.id}
+            className="border-b border-gray-300 py-3 flex flex-row justify-between items-center"
+          >
+            <div className="font-semibold flex flex-row items-center gap-3 md:gap-15 w-80 md:w-140">
+              <img src="img/event.jpg" alt="" className="w-25 md:w-30 " />
+
+              <div className="flex flex-col">
+                {e.name} – {e.location}
+                <div>
+                  <p>
+                    {new Date(e.start_time).toLocaleString()} to{" "}
+                    {new Date(e.end_time).toLocaleString()}
+                  </p>
+                  <p>{e.description}</p>
+                </div>
+              </div>
             </div>
-            <div style={{ marginTop: 5 }}>
+
+            <div className="mt-1 items-center flex flex-col gap-3 justify-center w-30">
               <Link
                 to={`/activity/${e.id}`}
-                style={{ textDecoration: "underline", color: "#2563eb" }}
+                className="underline text-blue-600 hover:text-blue-800"
               >
                 View More
               </Link>
+
+              <p className="px-2 py-1 hover:bg-orange-400 hover:scale-105 active:scale-95 cursor-pointer  bg-orange-200 rounded-xs">
+                Modify
+              </p>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

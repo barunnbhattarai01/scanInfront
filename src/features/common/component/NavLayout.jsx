@@ -7,12 +7,6 @@ export default function NavLayout() {
   const [style, setStyle] = useState("event");
   const navigate = useNavigate();
 
-  // function styleChange(name) {
-  //   setStyle(name);
-  // }
-
-  // function to sign out
-
   async function logOut() {
     await signOut(auth);
     navigate("/login", { replace: true });
@@ -29,30 +23,32 @@ export default function NavLayout() {
               setStyle("event");
             }}
             to="/"
-            className={`text-blue-600 rounded-xs hover:text-blue-800 transition-colors border-1 border-blue-200 px-3 py-1 ${
-              style == "event" ? "bg-blue-500 text-blue-950 font-semibold" : ""
+            className={`text-blue-600 rounded-xs hover:text-blue-800 transition-colors border-1 border-blue-200 px-3 py-1 hover:scale-105 active:scale-95 ${
+              style == "event" ? "bg-blue-300 text-blue-950 font-semibold" : ""
             }`}
           >
-            Events
+            Home
           </Link>
+
           <Link
             onClick={() => {
-              setStyle("user");
+              setStyle("event");
             }}
             to="/users"
-            className={`text-blue-600 rounded-xs hover:text-blue-800 transition-colors border-1 border-blue-200 px-3 py-1 ${
-              style == "user" ? "bg-blue-500 text-blue-950 font-semibold" : ""
+            className={`text-blue-600 rounded-xs hover:text-blue-800 transition-colors border-1 border-blue-200 px-3 py-1 hover:scale-105 active:scale-95 ${
+              style == "event" ? "bg-blue-300 text-blue-950 font-semibold" : ""
             }`}
           >
-            Users
+            User
           </Link>
+
+          <button
+            className="bg-orange-300 px-2 rounded-xs font-semibold py-1 cursor-pointer hover:bg-orange-400 active:scale-95 hover:scale-105"
+            onClick={logOut}
+          >
+            Log out
+          </button>
         </nav>
-        <button
-          className="bg-orange-300 px-2 rounded-xs font-semibold py-1 cursor-pointer hover:bg-orange-400 active:scale-95 hover:scale-105"
-          onClick={logOut}
-        >
-          Log out
-        </button>
       </div>
       <Outlet />
     </>
