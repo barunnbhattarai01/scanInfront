@@ -10,6 +10,18 @@ export default function CheckIn() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const { loading: userLoading, jwt } = useUserInfo();
+  const [edit, setEdit] = useState({});
+
+  // function to handel the edit ui of the frontend
+
+  function Edit(id) {
+    setEdit((pre) => {
+      return {
+        ...pre,
+        [id]: !pre[id],
+      };
+    });
+  }
 
   useEffect(() => {
     const fetchCheckIn = async () => {
@@ -38,6 +50,7 @@ export default function CheckIn() {
   }, []);
 
   const handleStatusUpdate = async (id) => {
+    console;
     if (userLoading || !jwt) {
       alert("failed");
       return;
@@ -114,12 +127,13 @@ export default function CheckIn() {
 
               <p className="flex items-center">
                 <strong>Status: {check.status}</strong>
-                {editMode && (
+                {edit[check.id] && (
                   <>
                     {check.status === "checked" ? (
                       <button
                         className="p-2 ml-2 bg-red-300 rounded-xl hover:scale-105 active:scale-95 cursor-pointer"
                         onClick={() => {
+                          Edit(check.id);
                           handleStatusUpdate(check.id);
                           setEditMode(false);
                         }}
@@ -130,6 +144,7 @@ export default function CheckIn() {
                       <button
                         className="p-2 ml-2 bg-green-300 hover:scale-105 active:scale-95 cursor-pointer rounded-xl"
                         onClick={() => {
+                          Edit(check.id);
                           handleStatusUpdate(check.id);
                           setEditMode(false);
                         }}
@@ -143,10 +158,12 @@ export default function CheckIn() {
             </div>
 
             <div className="mt-4 text-center">
-              {editMode ? (
+              {edit[check.id] ? (
                 <>
                   <button
-                    onClick={() => setEditMode(false)}
+                    onClick={() => {
+                      Edit(check.id);
+                    }}
                     className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
                   >
                     Cancel
@@ -156,6 +173,7 @@ export default function CheckIn() {
                 <button
                   onClick={() => {
                     setEditMode(true);
+                    Edit(check.id);
                   }}
                   className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                 >
@@ -164,7 +182,7 @@ export default function CheckIn() {
               )}
             </div>
 
-            {message && (
+            {message && edit[check.id] && (
               <p className="text-center text-green-600 mt-4">{message}</p>
             )}
           </div>
