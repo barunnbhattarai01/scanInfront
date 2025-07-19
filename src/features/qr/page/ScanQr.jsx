@@ -4,13 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BACKENDURL } from "../../../configuration";
 import useUserInfo from "../../common/hooks/useUserInfo";
 
-
 function ScanQr() {
-
   const { user, loading, jwt } = useUserInfo();
   const { activityId } = useParams();
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (loading == false) {
@@ -23,8 +20,8 @@ function ScanQr() {
 
   async function onClick(attendeeId) {
     if (loading || !jwt) {
-      alert("errr")
-      return
+      alert("errr");
+      return;
     }
     const respose = await fetch(BACKENDURL + "/checkins", {
       method: "POST",
@@ -37,14 +34,14 @@ function ScanQr() {
         activity_id: activityId,
         scanned_at: "2025-07-08T15:30:00Z", //todo change to time.now()
         status: "checked",
-        scanned_by: ""
+        scanned_by: "",
       }),
-    })
+    });
     if (respose.ok) {
-      alert("Sucess")
-      return
+      alert("Sucess");
+      return;
     }
-    alert("Failed")
+    alert("Failed");
   }
   return (
     <div
