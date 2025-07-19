@@ -71,6 +71,9 @@ export default function CheckIn() {
 
         setEdit((prev) => ({ ...prev, [id]: false }));
         setMessage("Status updated.");
+        setTimeout(() => {
+          setMessage("");
+        }, 2000);
       } else {
         setMessage("Failed to update status.");
       }
