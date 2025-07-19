@@ -4,7 +4,7 @@ import { auth } from "../../../firebase/firebase";
 import { getAuth, signOut } from "firebase/auth";
 
 export default function NavLayout() {
-  const [style, setStyle] = useState("scan");
+  const [style, setStyle] = useState("event");
   const navigate = useNavigate();
 
   // function styleChange(name) {
@@ -26,20 +26,9 @@ export default function NavLayout() {
         >
           <Link
             onClick={() => {
-              setStyle("scan");
-            }}
-            to="/"
-            className={`text-blue-600 rounded-xs hover:text-blue-800 transition-colors border-1 border-blue-200 px-3 py-1 ${
-              style == "scan" ? "bg-blue-500 text-blue-950 font-semibold" : ""
-            }`}
-          >
-            Scan
-          </Link>
-          <Link
-            onClick={() => {
               setStyle("event");
             }}
-            to="/event"
+            to="/"
             className={`text-blue-600 rounded-xs hover:text-blue-800 transition-colors border-1 border-blue-200 px-3 py-1 ${
               style == "event" ? "bg-blue-500 text-blue-950 font-semibold" : ""
             }`}
@@ -67,7 +56,5 @@ export default function NavLayout() {
       </div>
       <Outlet />
     </>
-
   );
 }
-
