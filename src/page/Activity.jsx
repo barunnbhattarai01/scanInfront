@@ -5,59 +5,6 @@ import { BACKENDURL } from "../configuration";
 import CheckIn from "./CheckIn";
 import useUserInfo from "../features/common/hooks/useUserInfo";
 
-const style = {
-  container: {
-    maxWidth: 600,
-    margin: "20px auto",
-    padding: 20,
-    fontFamily: "Arial, sans-serif",
-  },
-  toggleContainer: {
-    display: "flex",
-    gap: 10,
-    marginBottom: 20,
-  },
-  toggleButton: (active) => ({
-    padding: "8px 16px",
-    cursor: "pointer",
-    borderRadius: 4,
-    border: "1px solid #2563eb",
-    backgroundColor: active ? "#2563eb" : "white",
-    color: active ? "white" : "#2563eb",
-    fontWeight: active ? "bold" : "normal",
-  }),
-  button: {
-    padding: "8px 12px",
-    backgroundColor: "#2563eb",
-    color: "white",
-    border: "none",
-    borderRadius: 4,
-    cursor: "pointer",
-    marginBottom: 20,
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 10,
-    marginBottom: 20,
-    padding: 10,
-    border: "1px solid #ccc",
-    borderRadius: 4,
-  },
-  input: {
-    padding: 8,
-    borderRadius: 4,
-    border: "1px solid #ccc",
-    fontSize: 16,
-  },
-  listItem: {
-    marginBottom: 10,
-    padding: 10,
-    border: "1px solid #ddd",
-    borderRadius: 4,
-  },
-};
-
 function ActivitiesPage() {
   const { eventId } = useParams();
   const navigate = useNavigate();
@@ -251,11 +198,7 @@ function ActivitiesPage() {
               ? "bg-blue-600 text-white font-bold"
               : "bg-white text-blue-600"
           }`}
-          onClick={() => {
-            setView("checkin");
-            // setShowAddActivityForm(false);
-            // setShowAddAttendeeForm(false);
-          }}
+          onClick={() => setView("checkin")}
         >
           Check In
         </button>
@@ -321,7 +264,7 @@ function ActivitiesPage() {
             {activities?.map((a) => (
               <li
                 key={a.id}
-                style={style.listItem}
+                className="mb-3 p-3 border border-gray-300 rounded cursor-pointer"
                 onClick={() => {
                   console.log(a);
                   navigate(`/scan/${a.id}`);
@@ -390,28 +333,60 @@ function ActivitiesPage() {
 
           <h2 className="text-xl font-semibold mb-2">Attendees</h2>
           <ul className="list-none p-0">
+            {console.log(attendees)}
             {attendees.length > 0 ? (
               <PdfFile
                 attendees={attendees.map((att) => ({
+                  position: att.position,
+                  company: att.company,
                   eventId,
                   attendee_id: att.attendee_id,
                   username: att.full_name,
                   role: att.role,
                   phone: att.phone,
                   image_url: att.image_url,
-                  auto_id:att.auto_id
+                  auto_id: att.auto_id,
                 }))}
               />
             ) : (
               <li>No attendees found.</li>
             )}
           </ul>
+          <table className="border-collapse border border-gray-400 p-5 mt-5">
+            <tr>
+              <td className="border border-gray-300 p-3">S.N</td>
+              <td className="border border-gray-300 p-3">Full Name</td>
+              <td className="border border-gray-300 p-3">ID</td>
+              <td className="border border-gray-300 p-3">Position</td>
+              <td className="border border-gray-300 p-3">Qr code</td>
+              <td className="border border-gray-300 p-3">Status</td>
+            </tr>
+            {attendees.map((u, index) => {
+              return (
+                <tr key={u.id}>
+                  <td className="border border-gray-300 p-3">{index + 1}</td>
+                  <td className="border border-gray-300 p-3">{u.full_name}</td>
+                  <td className="border border-gray-300 p-3">
+                    {u.role}-{u.auto_id}
+                  </td>
+                  <td className="border border-gray-300 p-3">{u.position}</td>
+                  <td className="border border-gray-300 p-3">View</td>
+                  <td className="border border-gray-300 p-3">
+                    Status for nowf
+                  </td>
+                </tr>
+              );
+            })}
+          </table>
         </>
       )}
 
       {view === "checkin" && <CheckIn />}
 
-      <Link to="/" style={{ textDecoration: "underline", color: "#2563eb" }}>
+      <Link
+        to="/"
+        className="underline text-blue-600 hover:text-blue-800 mt-5 block"
+      >
         ← Back to Events
       </Link>
     </div>

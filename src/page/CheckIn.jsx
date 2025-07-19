@@ -9,24 +9,24 @@ export default function CheckIn() {
   const [editMode, setEditMode] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const { loading: userLoading, jwt } = useUserInfo()
+  const { loading: userLoading, jwt } = useUserInfo();
 
   useEffect(() => {
     const fetchCheckIn = async () => {
       setLoading(true);
 
-      if (userLoading || !jwt) return
+      if (userLoading || !jwt) return;
       const response = await fetch(`${BACKENDURL}/checkins`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
-        }
+        },
       });
 
       if (response.ok) {
         const data = await response.json();
         console.log(data);
         setCheckIn(data);
-       // setStatus(data.status);
+        // setStatus(data.status);
         setMessage("");
       } else {
         setMessage("Error loading check-in.");
@@ -39,9 +39,11 @@ export default function CheckIn() {
 
   const handleStatusUpdate = async (id) => {
     if (userLoading || !jwt) {
-      alert("failed")
-      return
+      alert("failed");
+      return;
     }
+    console.log(jwt);
+
     const response = await fetch(`${BACKENDURL}/checkins/${id}`, {
       method: "PUT",
       headers: {
@@ -50,6 +52,8 @@ export default function CheckIn() {
       },
       body: JSON.stringify({}),
     });
+
+    console.log(response);
 
     if (response.ok) {
       const updatedCheckIn = await response.json();
