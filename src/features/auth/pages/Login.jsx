@@ -23,17 +23,13 @@ export default function Login() {
         {/* Left Side */}
         <div className="relative flex-1 max-md:flex-0">
           <img
-            src="https://images.unsplash.com/photo-1650488908294-07186d808e5d?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="ECMS background"
+            src="img/landings.jpg"
             className="absolute max-md:invisible inset-0 max-md:w-0 max-md:h-0 w-full h-full object-cover rounded-l-3xl"
           />
         </div>
 
         {/* Right Side Login Form */}
         <div className="flex flex-col justify-center flex-1 bg-white p-16 rounded-r-3xl">
-          <h1 className="text-center text-5xl mb-15 text-orange-600 font-bold">
-            ECMS
-          </h1>
           <div className="max-w-md mx-auto w-full font-sans">
             <div className="mb-10 text-center">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -133,14 +129,12 @@ export default function Login() {
               </button>
             </form>
 
-            <p className="mt-10 text-center text-gray-600 text-sm">
-              Not Registered Yet?{" "}
+            <p className="mt-10 text-center text-black-600 text font-semibold">
+              Powred by OCS
               <a
                 href="#"
                 className="text-orange-600 hover:underline font-medium"
-              >
-                Create an account
-              </a>
+              ></a>
             </p>
           </div>
         </div>

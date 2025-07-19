@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     padding: "5px",
     justifyContent: "center",
     alignItems: "center",
+    gap: "2px",
   },
   divImage: {
     display: "flex",
@@ -34,24 +35,24 @@ const styles = StyleSheet.create({
   },
 
   attendeeBox: {
-    width: "32%",
+    width: "47%",
     height: 150,
-    margin: "px",
+    margin: "1px",
     borderRadius: 8,
-    padding: 10,
+    padding: "",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-between",
   },
   profileImage: {
-    width: "80px",
-    height: "70px",
+    width: "83px",
+    height: "80px",
     borderRadius: "0",
     marginBottom: "5px",
   },
   qrCode: {
-    width: "90px",
-    height: "90px",
+    width: "80px",
+    height: "80px",
   },
   infoText: {
     fontSize: 8,
@@ -59,20 +60,20 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   qrandtext: {
-    marginTop: "-10px",
+    marginTop: "-1px",
   },
 
   forInv: {
-    fontSize: 8,
+    fontSize: 9,
     textAlign: "center",
-    fontWeight: "800",
+    fontWeight: "900",
     marginLeft: "31px",
-    marginTop: "-10px",
+    marginTop: "-6px",
   },
 });
 
 // Helper function
-const splitIntoPages = (data, perPage = 15) => {
+const splitIntoPages = (data, perPage = 10) => {
   const pages = [];
   for (let i = 0; i < data.length; i += perPage) {
     const slice = data.slice(i, i + perPage);
@@ -83,8 +84,8 @@ const splitIntoPages = (data, perPage = 15) => {
 };
 
 // Document
-const PdfDocument = ({ attendees, profileImage }) => {
-  const pages = splitIntoPages(attendees, 15);
+const PdfDocument = ({ attendees }) => {
+  const pages = splitIntoPages(attendees, 10);
   return (
     <Document>
       {pages.map((group, idx) => (
@@ -97,17 +98,17 @@ const PdfDocument = ({ attendees, profileImage }) => {
                     <View style={styles.divImageAndText}>
                       <Image src={att.image_url} style={styles.profileImage} />
                       <Text style={styles.infoText}>
-                        MR. {att?.username?.toUpperCase()}
+                        {att?.username?.toUpperCase()}
                       </Text>
-                      <Text style={styles.infoText}>Sales Director</Text>
-                      <Text style={styles.infoText}>
-                        Pace Logistics Pvt. Ltd.
-                      </Text>
+                      <Text style={styles.infoText}>{att?.position}</Text>
+                      <Text style={styles.infoText}>{att?.company}</Text>
                     </View>
 
                     <View style={styles.qrandtext}>
                       <Image src={att?.qrUrl} style={styles.qrCode} />
-                      <Text style={styles.forInv}>{att?.role}-{att?.auto_id}</Text>
+                      <Text style={styles.forInv}>
+                        {att?.role}-{att?.auto_id}
+                      </Text>
                     </View>
                   </View>
                 </>
@@ -132,7 +133,7 @@ export default function PdfFile({ attendees = [] }) {
     const generateQRCodes = async () => {
       const dataWithQR = await Promise.all(
         attendees.map(async (att, idx) => {
-          console.log(att)
+          console.log(att);
           const qrText = `${String(idx + 1).padStart(3, "0")}`;
           const qrUrl = await QRCode.toDataURL(att.attendee_id);
           return { ...att, qrUrl, invoice: qrText };
