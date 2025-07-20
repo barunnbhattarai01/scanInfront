@@ -32,7 +32,7 @@ function ScanQr() {
       body: JSON.stringify({
         attendee_id: attendeeId,
         activity_id: activityId,
-        scanned_at: "2025-07-08T15:30:00Z", //todo change to time.now()
+        scanned_at: new Date().toISOString(), //todo change to time.now()
         status: "checked",
         scanned_by: "",
       }),

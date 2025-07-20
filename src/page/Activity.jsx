@@ -61,7 +61,6 @@ function ActivitiesPage() {
       if (res.ok) {
         const data = await res.json();
         if (data != null) {
-          console.log(data);
           setAttendees(data);
         }
       } else {
@@ -266,7 +265,6 @@ function ActivitiesPage() {
                 key={a.id}
                 className="mb-3 p-3 border border-gray-300 rounded cursor-pointer"
                 onClick={() => {
-                  console.log(a);
                   navigate(`/scan/${a.id}`);
                 }}
               >
@@ -373,10 +371,12 @@ function ActivitiesPage() {
 
                   <td className="border border-gray-300 p-3">{u.position}</td>
                   <td className="border border-gray-300 p-3">{u.company}</td>
-                  <td className="border border-gray-300 p-3">View</td>
                   <td className="border border-gray-300 p-3">
-                    Status for nowf
+                    <button className="p-2 bg-orange-100 rounded-xl hover:scale-105 active:scale-95 cursor-pointer ">
+                      View
+                    </button>
                   </td>
+                  <td className="border border-gray-300 p-3">Status for now</td>
                 </tr>
               );
             })}
