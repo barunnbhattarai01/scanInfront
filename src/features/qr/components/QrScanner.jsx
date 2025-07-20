@@ -4,7 +4,7 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 function QRScanner({ onScanSuccess }) {
   useEffect(() => {
     const scanner = new Html5QrcodeScanner("qr-reader", {
-      fps: 10,
+      fps: 0.5,
       qrbox: { width: 250, height: 250 },
     });
 
