@@ -1,76 +1,84 @@
 import React, { useEffect, useState } from "react";
-
 import { BACKENDURL } from "../configuration";
 import useUserInfo from "../features/common/hooks/useUserInfo";
 
 export default function CheckIn() {
-  const [checkIn, setCheckIn] = useState(null);
-  const [status, setStatus] = useState("");
-  const [editMode, setEditMode] = useState(false);
+  const [checkIn, setCheckIn] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const { loading: userLoading, jwt } = useUserInfo();
+  const [edit, setEdit] = useState({});
+
+  // Toggle Edit Mode for a specific ID
+  function toggleEdit(id) {
+    setEdit((prev) => ({ ...prev, [id]: !prev[id] }));
+  }
 
   useEffect(() => {
     const fetchCheckIn = async () => {
       setLoading(true);
-
       if (userLoading || !jwt) return;
-      const response = await fetch(`${BACKENDURL}/checkins`, {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        setCheckIn(data);
-        // setStatus(data.status);
-        setMessage("");
-      } else {
-        setMessage("Error loading check-in.");
+      try {
+        const response = await fetch(`${BACKENDURL}/checkins`, {
+          headers: { Authorization: `Bearer ${jwt}` },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setCheckIn(data);
+          setMessage("");
+        } else {
+          setMessage("Error loading check-in data.");
+        }
+      } catch (error) {
+        setMessage("Network error.");
       }
       setLoading(false);
     };
 
     fetchCheckIn();
-  }, []);
+  }, [userLoading, jwt]);
 
-  const handleStatusUpdate = async (id) => {
+  const handleStatusUpdate = async (id, currentStatus) => {
     if (userLoading || !jwt) {
-      alert("failed");
+      alert("Authentication failed.");
       return;
     }
-    console.log(jwt);
 
-    const response = await fetch(`${BACKENDURL}/checkins/${id}`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({}),
-    });
+    const newStatus = currentStatus === "checked" ? "unchecked" : "checked";
 
-    console.log(response);
-
-    if (response.ok) {
-      const updatedCheckIn = await response.json();
-      const filtredData = checkIn.filter((check) => check.id != id);
-      console.log(filtredData);
-      setCheckIn((pre) => {
-        return [...filtredData, updatedCheckIn];
+    try {
+      const response = await fetch(`${BACKENDURL}/checkins/${id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
       });
 
-      setStatus(updatedCheckIn.status);
-      setEditMode(false);
-      setMessage("Status updated successfully.");
-      setTimeout(() => {
-        setMessage("");
-      }, 3000);
-    } else {
-      setMessage("Error updating status.");
+      if (response.ok) {
+        const updatedCheckIn = await response.json();
+
+        setCheckIn((prev) =>
+          prev.map((check) =>
+            check.id === id
+              ? { ...check, status: updatedCheckIn.status }
+              : check
+          )
+        );
+
+        setEdit((prev) => ({ ...prev, [id]: false }));
+        setMessage("Status updated.");
+        setTimeout(() => {
+          setMessage("");
+        }, 2000);
+      } else {
+        setMessage("Failed to update status.");
+      }
+    } catch (error) {
+      setMessage("Network error while updating.");
     }
   };
 
@@ -78,98 +86,64 @@ export default function CheckIn() {
     return <div className="text-center mt-10">Loading...</div>;
   }
 
-  if (!checkIn) {
+  if (!checkIn || checkIn.length === 0) {
     return (
       <div className="text-center mt-10 text-red-500">
-        No check-in data available.
+        {message || "No check-in data available."}
       </div>
     );
   }
 
   return (
-    <>
-      {checkIn.map((check) => {
-        return (
-          <div
-            className="max-w-xl mx-auto p-6 bg-white shadow rounded-xl mt-10"
-            key={check.id}
-          >
-            <h2 className="text-2xl font-bold mb-4 text-center">
-              Check-In Details
-            </h2>
-
-            <div className="bg-gray-100 p-4 rounded space-y-2">
-              <p>
-                <strong>Full Name:</strong> {check.full_name}
-              </p>
-
-              <p>
-                <strong>Scanned At:</strong>{" "}
-                {new Date(check.scanned_at).toLocaleString()}
-              </p>
-              <p>
-                <strong>Scanned By:</strong>
-                {check.scanned_by}
-              </p>
-
-              <p className="flex items-center">
-                <strong>Status: {check.status}</strong>
-                {editMode && (
-                  <>
-                    {check.status === "checked" ? (
-                      <button
-                        className="p-2 ml-2 bg-red-300 rounded-xl hover:scale-105 active:scale-95 cursor-pointer"
-                        onClick={() => {
-                          handleStatusUpdate(check.id);
-                          setEditMode(false);
-                        }}
-                      >
-                        Uncheck
-                      </button>
-                    ) : (
-                      <button
-                        className="p-2 ml-2 bg-green-300 hover:scale-105 active:scale-95 cursor-pointer rounded-xl"
-                        onClick={() => {
-                          handleStatusUpdate(check.id);
-                          setEditMode(false);
-                        }}
-                      >
-                        Check
-                      </button>
-                    )}
-                  </>
-                )}
-              </p>
-            </div>
-
-            <div className="mt-4 text-center">
-              {editMode ? (
-                <>
-                  <button
-                    onClick={() => setEditMode(false)}
-                    className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-                  >
-                    Cancel
-                  </button>
-                </>
-              ) : (
+    <div className="flex flex-col w-full">
+      <h2 className="text-2xl font-bold text-center">Check-In Details</h2>
+      {message && (
+        <div className="text-center text-green-500 font-semibold mt-2">
+          {message}
+        </div>
+      )}
+      {checkIn.map((check) => (
+        <div
+          key={check.id}
+          className="max-w-xl mx-auto p-6 bg-white shadow rounded-xl mt-10"
+        >
+          <div className="bg-gray-100 p-4 rounded space-y-2">
+            <p>
+              <strong>Full Name:</strong> {check.full_name}
+            </p>
+            <p>
+              <strong>Scanned At:</strong>{" "}
+              {new Date(check.scanned_at).toLocaleString()}
+            </p>
+            <p>
+              <strong>Scanned By:</strong> {check.scanned_by}
+            </p>
+            <p className="flex items-center gap-2">
+              <strong>Status:</strong> {check.status}
+              {edit[check.id] && (
                 <button
-                  onClick={() => {
-                    setEditMode(true);
-                  }}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  onClick={() => handleStatusUpdate(check.id, check.status)}
+                  className={`p-2 rounded-xl text-white ${
+                    check.status === "checked"
+                      ? "bg-red-500 hover:bg-red-600"
+                      : "bg-green-500 hover:bg-green-600"
+                  }`}
                 >
-                  Edit Status
+                  {check.status === "checked" ? "Uncheck" : "Check"}
                 </button>
               )}
-            </div>
-
-            {message && (
-              <p className="text-center text-green-600 mt-4">{message}</p>
-            )}
+            </p>
           </div>
-        );
-      })}
-    </>
+          <div className="mt-4 text-center">
+            <button
+              onClick={() => toggleEdit(check.id)}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              {edit[check.id] ? "Cancel" : "Edit Status"}
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }

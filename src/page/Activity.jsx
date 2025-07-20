@@ -354,22 +354,25 @@ function ActivitiesPage() {
           </ul>
           <table className="border-collapse border border-gray-400 p-5 mt-5">
             <tr>
-              <td className="border border-gray-300 p-3">S.N</td>
-              <td className="border border-gray-300 p-3">Full Name</td>
               <td className="border border-gray-300 p-3">ID</td>
+
+              <td className="border border-gray-300 p-3">Full Name</td>
+
               <td className="border border-gray-300 p-3">Position</td>
+              <td className="border border-gray-300 p-3">Company</td>
               <td className="border border-gray-300 p-3">Qr code</td>
               <td className="border border-gray-300 p-3">Status</td>
             </tr>
             {attendees.map((u, index) => {
               return (
                 <tr key={u.id}>
-                  <td className="border border-gray-300 p-3">{index + 1}</td>
-                  <td className="border border-gray-300 p-3">{u.full_name}</td>
                   <td className="border border-gray-300 p-3">
                     {u.role}-{u.auto_id}
                   </td>
+                  <td className="border border-gray-300 p-3">{u.full_name}</td>
+
                   <td className="border border-gray-300 p-3">{u.position}</td>
+                  <td className="border border-gray-300 p-3">{u.company}</td>
                   <td className="border border-gray-300 p-3">View</td>
                   <td className="border border-gray-300 p-3">
                     Status for nowf
