@@ -19,7 +19,7 @@ function EventsPage() {
 
   useEffect(() => {
     if (loading) return;
-
+      
     if (!user || !jwt) {
       navigate("/login", { replace: true });
       return;
