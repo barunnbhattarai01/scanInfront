@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Activities({ eventId, loading, jwt }) {
   const [showAddActivityForm, setShowAddActivityForm] = useState(false);
-  const [activities, setActivities] = useState([]);
-  const [event, setEvent] = useState(null);
+  const [activities, setActivities] = useState(null);
   const navigate = useNavigate();
 
   const [activityForm, setActivityForm] = useState({
@@ -27,7 +26,6 @@ export default function Activities({ eventId, loading, jwt }) {
       });
 
       const data = await res.json();
-      setEvent(data.event);
       setActivities(data.activities);
     } catch (err) {
       console.error("Failed to fetch event info", err);
@@ -41,8 +39,12 @@ export default function Activities({ eventId, loading, jwt }) {
     // fetchAttendees();
   }, [eventId, loading]);
 
-  if (activities.length == 0) {
+  if (!activities) {
     return <div>Loading please wait...</div>;
+  }
+
+  if (activities.length == 0) {
+    return <p>No activities found</p>;
   }
 
   return (

@@ -11,7 +11,7 @@ export default function UserList({ attendees }) {
   // function to handle the lagging of the ui
 
   function checkData() {
-    if (attendees.length > 100) {
+    if (attendees?.length > 100) {
       setMakeLoading(true);
       setTimeout(() => {
         setMakeLoading(false);
@@ -23,8 +23,16 @@ export default function UserList({ attendees }) {
     checkData();
   }, []);
 
+  if (!attendees) {
+    return <p>Loading data please wait...</p>;
+  }
+
   if (makeLoading) {
     return <p>Loding data please wait...</p>;
+  }
+
+  if (attendees.length == 0) {
+    return <p>No attendee found</p>;
   }
 
   return (

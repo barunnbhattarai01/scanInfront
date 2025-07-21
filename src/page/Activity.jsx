@@ -10,7 +10,7 @@ import Activities from "./Activites";
 function ActivitiesPage() {
   const { eventId } = useParams();
   const navigate = useNavigate();
-  const [attendees, setAttendees] = useState([]);
+  const [attendees, setAttendees] = useState(null);
   const [generate, setGenerate] = useState(false);
   const [view, setView] = useState("activities");
   const [event, setEvent] = useState(null);
@@ -219,7 +219,7 @@ function ActivitiesPage() {
                 className="p-2 border border-gray-300 rounded text-base"
               >
                 <option value="">-- Select User --</option>
-                {users.map((u) => (
+                {users?.map((u) => (
                   <option key={u.id} value={u.id}>
                     {u.full_name} -- {u.company}
                   </option>
@@ -262,10 +262,10 @@ function ActivitiesPage() {
               )}
             </div>
 
-            {attendees.length > 0 ? (
+            {attendees?.length > 0 ? (
               generate && (
                 <PdfFile
-                  attendees={attendees.map((att) => ({
+                  attendees={attendees?.map((att) => ({
                     position: att.position,
                     company: att.company,
                     eventId,
