@@ -159,7 +159,7 @@ export default function PdfFile({ attendees = [] }) {
         fileName="Bulk_Attendees.pdf"
       >
         {({ loading }) => (
-          <button className="p-2 bg-blue-500 text-white rounded-lg">
+          <button className="p-2 bg-blue-500 text-white rounded-lg cursor-pointer hover:scale-105 active:scale-95">
             {loading ? "Generating PDF..." : "Download PDF"}
           </button>
         )}

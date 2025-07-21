@@ -19,7 +19,7 @@ function EventsPage() {
 
   useEffect(() => {
     if (loading) return;
-      
+
     if (!user || !jwt) {
       navigate("/login", { replace: true });
       return;
@@ -38,7 +38,7 @@ function EventsPage() {
         return res.json();
       })
       .then((json) => {
-        console.log(json)
+        console.log(json);
         if (json != null) {
           setEvents(json);
         }
@@ -166,40 +166,46 @@ function EventsPage() {
       )}
 
       <div className="mt-5 pl-0 w-full">
-        {events?.map((e) => (
-          <div
-            key={e.id}
-            className="border-b border-gray-300 py-3 flex flex-row justify-between items-center"
-          >
-            <div className="font-semibold flex flex-row items-center gap-3 md:gap-15 w-80 md:w-140">
-              <img src="img/event.jpg" alt="" className="w-25 md:w-30 " />
+        <div className="flex justify-center items-center">
+          {events.length == 0 && <p>Loading please wait...</p>}
+        </div>
 
-              <div className="flex flex-col">
-                {e.name} – {e.location}
-                <div>
-                  <p>
-                    {new Date(e.start_time).toLocaleString()} to{" "}
-                    {new Date(e.end_time).toLocaleString()}
-                  </p>
-                  <p>{e.description}</p>
+        {events?.map((e) => {
+          return (
+            <div
+              key={e.id}
+              className="border-b border-gray-300 py-3 flex flex-row justify-between items-center"
+            >
+              <div className="font-semibold flex flex-row items-center gap-3 md:gap-15 w-80 md:w-140">
+                <img src="img/event.jpg" alt="" className="w-25 md:w-30 " />
+
+                <div className="flex flex-col">
+                  {e.name} – {e.location}
+                  <div>
+                    <p>
+                      {new Date(e.start_time).toLocaleString()} to{" "}
+                      {new Date(e.end_time).toLocaleString()}
+                    </p>
+                    <p>{e.description}</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="mt-1 items-center flex flex-col gap-3 justify-center w-30">
-              <Link
-                to={`/activity/${e.id}`}
-                className="underline text-blue-600 hover:text-blue-800"
-              >
-                View More
-              </Link>
+              <div className="mt-1 items-center flex flex-col gap-3 justify-center w-30">
+                <Link
+                  to={`/activity/${e.id}`}
+                  className="underline text-blue-600 hover:text-blue-800"
+                >
+                  View More
+                </Link>
 
-              <p className="px-2 py-1 hover:bg-orange-400 hover:scale-105 active:scale-95 cursor-pointer  bg-orange-200 rounded-xs">
-                Modify
-              </p>
+                <p className="px-2 py-1 hover:bg-orange-400 hover:scale-105 active:scale-95 cursor-pointer  bg-orange-200 rounded-xs">
+                  Modify
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
