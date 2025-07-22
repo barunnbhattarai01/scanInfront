@@ -84,7 +84,7 @@ export default function UserList({ attendees }) {
           </table>
 
           {showqr && (
-            <div className="w-60 fixed bg-orange-200 shadow-2xl flex flex-col justify-center items-center top-20 rounded-2xl">
+            <div className="w-60 fixed bg-orange-200 shadow-2xl flex flex-col justify-center items-center top-20 rounded-2xl z-10">
               <QRCodeGenerator text={aid} />
               {mid}
               <button

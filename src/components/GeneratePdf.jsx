@@ -1,5 +1,6 @@
 import PdfFile from "../features/common/component/PdfFile";
 import { useState } from "react";
+import PdfFileQr from "../features/common/component/PdfFileQr";
 
 export default function GeneratePdf({
   attendees,
@@ -10,9 +11,10 @@ export default function GeneratePdf({
   const [pdfgenerate, setPdfgenerate] = useState(false);
   const [filtred, setFiltred] = useState([]);
   const [type, setType] = useState("");
+  const [pdfqr, setPdfqr] = useState(false);
   const [range, setRange] = useState({
-    start: null,
-    end: null,
+    start: 0,
+    end: 0,
   });
 
   // declaring index variable to track the variables
@@ -77,6 +79,64 @@ export default function GeneratePdf({
     setGenerate(false);
   }
 
+  // to handle only the generation of the pdf with qr only
+  function handleGenerate() {
+    if (range.end == 0 || range.start == 0 || type.length == 0) {
+      alert("Please enter a valid range");
+      return;
+    }
+
+    // to find the starting index and end index of the type defined by the user
+
+    // loop to find the starting index
+
+    for (let i = 0; i < attendees.length; i++) {
+      if (type.toUpperCase() == attendees[i].role.toUpperCase()) {
+        startIndex = i;
+        break;
+      }
+    }
+
+    // loop to find the end index
+
+    for (let i = startIndex; i < attendees.length; i++) {
+      if (type.toUpperCase() == attendees[i].role.toUpperCase()) {
+        endIndex = i;
+      }
+    }
+
+    let newData = [];
+
+    if (range.start == 1) {
+      for (let i = startIndex; i <= endIndex; i++) {
+        newData = [...newData, attendees[i]];
+        range.start++;
+
+        if (range.start > range.end) {
+          break;
+        }
+      }
+    } else {
+      for (let i = 1; i < range.start; i++) {
+        startIndex++;
+      }
+
+      for (let i = startIndex; i <= endIndex; i++) {
+        newData = [...newData, attendees[i]];
+        range.start++;
+
+        if (range.start > range.end) {
+          break;
+        }
+      }
+    }
+
+    setFiltred(newData);
+
+    setPdfqr(true);
+    setGenerate(false);
+  }
+
   return (
     <>
       <div className="absolute top-60 left-50 md:left-180 flex flex-col justify-center items-center">
@@ -87,6 +147,7 @@ export default function GeneratePdf({
               onClick={() => {
                 setGenerate(true);
                 setPdfgenerate(false);
+                setPdfqr(false);
               }}
             >
               Generate PDF
@@ -159,6 +220,15 @@ export default function GeneratePdf({
               </button>
             </div>
             <button
+              button
+              className="px-2 py-1 bg-orange-300 rounded-xs hover:scale-105 active:scale-95 cursor-pointer"
+              onClick={() => {
+                handleGenerate();
+              }}
+            >
+              Qr only pdf
+            </button>
+            <button
               className="px-2 py-1 bg-blue-300 rounded-xs hover:scale-105 active:scale-95 cursor-pointer"
               onClick={() => {
                 setGenerate(false);
@@ -172,6 +242,26 @@ export default function GeneratePdf({
         {filtred?.length > 0 ? (
           pdfgenerate && (
             <PdfFile
+              attendees={filtred?.map((att) => ({
+                position: att.position,
+                company: att.company,
+                eventId,
+                attendee_id: att.attendee_id,
+                username: att.full_name,
+                role: att.role,
+                phone: att.phone,
+                image_url: att.image_url,
+                auto_id: att.auto_id,
+              }))}
+            />
+          )
+        ) : (
+          <p></p>
+        )}
+
+        {filtred?.length > 0 ? (
+          pdfqr && (
+            <PdfFileQr
               attendees={filtred?.map((att) => ({
                 position: att.position,
                 company: att.company,

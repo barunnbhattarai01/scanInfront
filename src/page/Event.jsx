@@ -170,14 +170,18 @@ function EventsPage() {
           {events.length == 0 && <p>Loading please wait...</p>}
         </div>
 
-        {events?.map((e) => {
+        {events?.map((e, index) => {
           return (
             <div
               key={e.id}
               className="border-b border-gray-300 py-3 flex flex-row justify-between items-center"
             >
               <div className="font-semibold flex flex-row items-center gap-3 md:gap-15 w-80 md:w-140">
-                <img src="img/event.jpg" alt="" className="w-25 md:w-30 " />
+                <img
+                  src={`img/event${index + 1}.jpg`}
+                  alt=""
+                  className="w-25 md:w-30 "
+                />
 
                 <div className="flex flex-col">
                   {e.name} – {e.location}
