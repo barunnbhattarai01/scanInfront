@@ -43,10 +43,6 @@ export default function Activities({ eventId, loading, jwt }) {
     return <div>Loading please wait...</div>;
   }
 
-  if (activities.length == 0) {
-    return <p>No activities found</p>;
-  }
-
   return (
     <>
       <button
@@ -105,23 +101,28 @@ export default function Activities({ eventId, loading, jwt }) {
       )}
 
       <h2 className="text-xl font-semibold mb-2">Activities</h2>
-      <ul className="list-none p-0">
-        {activities?.map((a) => (
-          <li
-            key={a.id}
-            className="mb-3 p-3 border border-gray-300 rounded cursor-pointer"
-            onClick={() => {
-              navigate(`/scan/${a.id}`);
-            }}
-          >
-            <strong>{a.name}</strong> – {a.type}
-            <br />
-            Start: {new Date(a.start_time).toLocaleString()}
-            <br />
-            End: {new Date(a.end_time).toLocaleString()}
-          </li>
-        ))}
-      </ul>
+
+      {activities.length != 0 ? (
+        <ul className="list-none p-0">
+          {activities?.map((a) => (
+            <li
+              key={a.id}
+              className="mb-3 p-3 border border-gray-300 rounded cursor-pointer"
+              onClick={() => {
+                navigate(`/scan/${a.id}`);
+              }}
+            >
+              <strong>{a.name}</strong> – {a.type}
+              <br />
+              Start: {new Date(a.start_time).toLocaleString()}
+              <br />
+              End: {new Date(a.end_time).toLocaleString()}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p> No activites found</p>
+      )}
     </>
   );
 }
