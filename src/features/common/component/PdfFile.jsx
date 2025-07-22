@@ -21,28 +21,31 @@ const styles = StyleSheet.create({
     gap: "2px",
   },
   divImage: {
-    display: "flex",
     flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
     gap: "5px",
-    // alignItems: "center",
+    width: "100%",
   },
 
   divImageAndText: {
-    display: "flex",
     flexDirection: "column",
-    // alignItems: "center",
-    justifyContent: "center",
+    alignItems: "center",
+    flexShrink: 1,
+    width: "45%",
   },
 
   attendeeBox: {
     width: "47%",
-    height: 150,
+    minHeight: 150,
     margin: "1px",
     borderRadius: 8,
-    padding: "",
+    padding: "5px",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
+    flexGrow: 1,
+    flexShrink: 1,
   },
   profileImage: {
     width: "83px",
@@ -57,9 +60,14 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 8,
     textAlign: "center",
-    fontWeight: "800",
+    wordBreak: "break-word",
+    flexShrink: 1,
+    width: "100%",
   },
   qrandtext: {
+    flexDirection: "column",
+    alignItems: "center",
+    width: "45%",
     marginTop: "-1px",
   },
 
@@ -67,8 +75,8 @@ const styles = StyleSheet.create({
     fontSize: 9,
     textAlign: "center",
     fontWeight: "900",
-    marginLeft: "31px",
-    marginTop: "-6px",
+    marginTop: "2px",
+    flexShrink: 1,
   },
 });
 

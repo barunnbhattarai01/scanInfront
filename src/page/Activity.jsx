@@ -6,14 +6,15 @@ import CheckIn from "./CheckIn";
 import useUserInfo from "../features/common/hooks/useUserInfo";
 import UserList from "./UserList";
 import Activities from "./Activites";
+import GeneratePdf from "../components/GeneratePdf";
 
 function ActivitiesPage() {
   const { eventId } = useParams();
   const navigate = useNavigate();
-  const [attendees, setAttendees] = useState([]);
-  const [generate, setGenerate] = useState(false);
+  const [attendees, setAttendees] = useState(null);
   const [view, setView] = useState("activities");
   const [event, setEvent] = useState(null);
+  const [generate, setGenerate] = useState(false);
 
   const { loading, jwt, user } = useUserInfo();
 
@@ -199,90 +200,65 @@ function ActivitiesPage() {
 
       {view === "attendees" && (
         <>
-          <button
-            className="mb-4 px-4 py-2 bg-blue-600 text-white rounded"
-            onClick={() => setShowAddAttendeeForm((v) => !v)}
-          >
-            {showAddAttendeeForm ? "Cancel Add Attendee" : "Add Attendee"}
-          </button>
-
-          {showAddAttendeeForm && (
-            <form
-              onSubmit={handleAddAttendee}
-              className="flex flex-col gap-3 p-4 border border-gray-300 rounded mb-5"
+          <div className={`${generate ? "blur-2xl" : ""}`}>
+            <button
+              className="mb-4 px-4 py-2 bg-blue-600 text-white rounded"
+              onClick={() => setShowAddAttendeeForm((v) => !v)}
             >
-              <select
-                name="user_id"
-                value={attendeeForm.user_id}
-                onChange={handleAttendeeChange}
-                required
-                className="p-2 border border-gray-300 rounded text-base"
-              >
-                <option value="">-- Select User --</option>
-                {users.map((u) => (
-                  <option key={u.id} value={u.id}>
-                    {u.full_name} -- {u.company}
-                  </option>
-                ))}
-              </select>
+              {showAddAttendeeForm ? "Cancel Add Attendee" : "Add Attendee"}
+            </button>
 
-              <select
-                name="role"
-                value={attendeeForm.role}
-                onChange={handleAttendeeChange}
-                required
-                className="p-2 border border-gray-300 rounded text-base"
+            {showAddAttendeeForm && (
+              <form
+                onSubmit={handleAddAttendee}
+                className="flex flex-col gap-3 p-4 border border-gray-300 rounded mb-5"
               >
-                <option value="participant">Participant</option>
-                <option value="staff">Staff</option>
-                <option value="member">Member</option>
-              </select>
-
-              <button
-                type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded"
-              >
-                Submit Attendee
-              </button>
-            </form>
-          )}
-
-          <h2 className="text-xl font-semibold mb-2">Attendees</h2>
-          <ul className="list-none p-0">
-            <div className="flex justify-center items-center">
-              {!generate && (
-                <button
-                  className="p-2 bg-blue-500 text-white rounded-lg cursor-pointer hover:scale-105 active:scale-95"
-                  onClick={() => {
-                    setGenerate(true);
-                  }}
+                <select
+                  name="user_id"
+                  value={attendeeForm.user_id}
+                  onChange={handleAttendeeChange}
+                  required
+                  className="p-2 border border-gray-300 rounded text-base"
                 >
-                  Generate PDF
-                </button>
-              )}
-            </div>
+                  <option value="">-- Select User --</option>
+                  {users?.map((u) => (
+                    <option key={u.id} value={u.id}>
+                      {u.full_name} -- {u.company}
+                    </option>
+                  ))}
+                </select>
 
-            {attendees.length > 0 ? (
-              generate && (
-                <PdfFile
-                  attendees={attendees.map((att) => ({
-                    position: att.position,
-                    company: att.company,
-                    eventId,
-                    attendee_id: att.attendee_id,
-                    username: att.full_name,
-                    role: att.role,
-                    phone: att.phone,
-                    image_url: att.image_url,
-                    auto_id: att.auto_id,
-                  }))}
-                />
-              )
-            ) : (
-              <li>No attendees found.</li>
+                <select
+                  name="role"
+                  value={attendeeForm.role}
+                  onChange={handleAttendeeChange}
+                  required
+                  className="p-2 border border-gray-300 rounded text-base"
+                >
+                  <option value="participant">Participant</option>
+                  <option value="staff">Staff</option>
+                  <option value="member">Member</option>
+                </select>
+
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded"
+                >
+                  Submit Attendee
+                </button>
+              </form>
             )}
-          </ul>
-          <UserList attendees={attendees} />
+
+            <h2 className="text-xl font-semibold mb-2">Attendees</h2>
+
+            <UserList attendees={attendees} />
+          </div>
+          <GeneratePdf
+            attendees={attendees}
+            eventId={eventId}
+            generate={generate}
+            setGenerate={setGenerate}
+          />
         </>
       )}
 
