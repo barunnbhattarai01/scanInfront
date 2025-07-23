@@ -10,120 +10,61 @@ import {
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 
-// Styles
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    padding: "5px",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: "2px",
-  },
-  divImage: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: "5px",
-    width: "100%",
-  },
-
-  divImageAndText: {
-    flexDirection: "column",
-    alignItems: "center",
-    flexShrink: 1,
-    width: "45%",
-  },
-
-  attendeeBox: {
-    width: "47%",
-    minHeight: 150,
-    margin: "1px",
-    borderRadius: 8,
-    padding: "5px",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    flexGrow: 1,
-    flexShrink: 1,
-  },
-  profileImage: {
-    width: "83px",
-    height: "80px",
-    borderRadius: "0",
-    marginBottom: "5px",
-  },
-  qrCode: {
-    width: "80px",
-    height: "80px",
-  },
-  infoText: {
-    fontSize: 8,
-    textAlign: "center",
-    wordBreak: "break-word",
-    flexShrink: 1,
-    width: "100%",
-  },
-  qrandtext: {
-    flexDirection: "column",
-    alignItems: "center",
-    width: "45%",
-    marginTop: "-1px",
-  },
-
-  forInv: {
-    fontSize: 9,
-    textAlign: "center",
-    fontWeight: "900",
-    marginTop: "2px",
-    flexShrink: 1,
-  },
-});
-
-// Helper function
-const splitIntoPages = (data, perPage = 10) => {
-  const pages = [];
-  for (let i = 0; i < data.length; i += perPage) {
-    const slice = data.slice(i, i + perPage);
-    while (slice.length < perPage) slice.push({ isEmpty: true });
-    pages.push(slice);
-  }
-  return pages;
-};
-
-// Document
-const PdfDocument = ({ attendees }) => {
-  const pages = splitIntoPages(attendees, 10);
+const PdfDocument = ({ attendees, size, styles }) => {
   return (
     <Document>
-      {pages.map((group, idx) => (
-        <Page key={idx} size="A4" style={styles.page}>
-          {group.map((att, i) => (
-            <View key={i} style={styles.attendeeBox}>
-              {!att?.isEmpty ? (
-                <>
-                  <View style={styles.divImage}>
-                    <View style={styles.qrandtext}>
-                      <Image src={att?.qrUrl} style={styles.qrCode} />
-                      <Text style={styles.forInv}>
-                        {att?.role}-{att?.auto_id}
-                      </Text>
-                    </View>
-                  </View>
-                </>
-              ) : (
-                <></>
-              )}
+      <Page wrap size="A4" style={styles.page} break={true}>
+        {attendees.map((att, i) => (
+          <View style={styles.attendeeBox}>
+            <View style={styles.qrandtext}>
+              <Image
+                src={att?.qrUrl}
+                style={{ height: `${size}px`, width: `${size}px` }}
+              />
+              <Text style={styles.forInv}>
+                {att?.role}-{att?.auto_id}
+              </Text>
             </View>
-          ))}
-        </Page>
-      ))}
+          </View>
+        ))}
+      </Page>
     </Document>
   );
 };
 
-// Main component
-export default function PdfFileQr({ attendees = [] }) {
+// Main Component
+export default function PdfFileQr({ attendees = [], size }) {
+  const newsize = size + 10;
+  const styles = StyleSheet.create({
+    page: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      padding: "10px",
+      justifyContent: "flex-start",
+      alignItems: "flex-start",
+    },
+
+    attendeeBox: {
+      minHeight: 120,
+    },
+
+    qrandtext: {
+      flexDirection: "column",
+      alignItems: "center",
+    },
+    qrImage: {
+      height: `${size}px`,
+      width: `${size}px`,
+      objectFit: "contain",
+    },
+    forInv: {
+      fontSize: 9,
+      textAlign: "center",
+      marginTop: 4,
+      fontWeight: 500,
+    },
+  });
+
   const [processedAttendees, setProcessedAttendees] = useState([]);
   const profileImage =
     "/mnt/data/WhatsApp Image 2025-07-17 at 19.48.46_3ae0b241.jpg";
@@ -132,7 +73,6 @@ export default function PdfFileQr({ attendees = [] }) {
     const generateQRCodes = async () => {
       const dataWithQR = await Promise.all(
         attendees.map(async (att, idx) => {
-          console.log(att);
           const qrText = `${String(idx + 1).padStart(3, "0")}`;
           const qrUrl = await QRCode.toDataURL(att.attendee_id);
           return { ...att, qrUrl, invoice: qrText };
@@ -151,6 +91,8 @@ export default function PdfFileQr({ attendees = [] }) {
       <PDFDownloadLink
         document={
           <PdfDocument
+            styles={styles}
+            size={size}
             attendees={processedAttendees}
             profileImage={profileImage}
           />

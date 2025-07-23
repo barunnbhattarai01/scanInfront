@@ -23,6 +23,7 @@ function QRScanner({ onScanSuccess }) {
 
     return () => {
       scanner.clear().catch((error) => console.error("Clear failed:", error));
+      localStorage.clear("HTML5_QRCODE_DATA");
     };
   }, [onScanSuccess]);
 
