@@ -102,33 +102,6 @@ function ActivitiesPage() {
     setAttendeeForm({ ...attendeeForm, [e.target.name]: e.target.value });
   };
 
-  const handleAddActivity = async (e) => {
-    e.preventDefault();
-    try {
-      const startISO = new Date(activityForm.start_time).toISOString();
-      const endISO = new Date(activityForm.end_time).toISOString();
-      const res = await fetch(`${BACKENDURL}/activity`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...activityForm,
-          start_time: startISO,
-          end_time: endISO,
-          event_id: eventId,
-        }),
-      });
-      if (!res.ok) throw new Error("Failed to add activity");
-
-      setActivityForm({ name: "", type: "", start_time: "", end_time: "" });
-      setShowAddActivityForm(false);
-      fetchEventInfo();
-    } catch (err) {
-      alert(err.message);
-    }
-  };
 
   const handleAddAttendee = async (e) => {
     e.preventDefault();

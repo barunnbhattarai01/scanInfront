@@ -12,9 +12,11 @@ export default function GeneratePdf({
   const [filtred, setFiltred] = useState([]);
   const [type, setType] = useState("");
   const [pdfqr, setPdfqr] = useState(false);
+  const [size, setSize] = useState(0);
+  const [qrsizevisible, setQrsizevisible] = useState(false);
   const [range, setRange] = useState({
-    start: 0,
-    end: 0,
+    start: "",
+    end: "",
   });
 
   // declaring index variable to track the variables
@@ -23,7 +25,10 @@ export default function GeneratePdf({
   let endIndex = 0;
 
   function handleGenerate() {
-    if (range.end == 0 || range.start == 0 || type.length == 0) {
+    let start = parseInt(range.start);
+    let end = parseInt(rangeend);
+
+    if (end == 0 || start == 0 || type.length == 0) {
       alert("Please enter a valid range");
       return;
     }
@@ -49,25 +54,25 @@ export default function GeneratePdf({
 
     let newData = [];
 
-    if (range.start == 1) {
+    if (start == 1) {
       for (let i = startIndex; i <= endIndex; i++) {
         newData = [...newData, attendees[i]];
-        range.start++;
+        start++;
 
-        if (range.start > range.end) {
+        if (start > end) {
           break;
         }
       }
     } else {
-      for (let i = 1; i < range.start; i++) {
+      for (let i = 1; i < start; i++) {
         startIndex++;
       }
 
       for (let i = startIndex; i <= endIndex; i++) {
         newData = [...newData, attendees[i]];
-        range.start++;
+        start++;
 
-        if (range.start > range.end) {
+        if (start > end) {
           break;
         }
       }
@@ -81,7 +86,9 @@ export default function GeneratePdf({
 
   // to handle only the generation of the pdf with qr only
   function handleGenerateQR() {
-    if (range.end == 0 || range.start == 0 || type.length == 0) {
+    let start = parseInt(range.start);
+    let end = parseInt(range.end);
+    if (end == 0 || start == 0 || type.length == 0) {
       alert("Please enter a valid range");
       return;
     }
@@ -107,32 +114,32 @@ export default function GeneratePdf({
 
     let newData = [];
 
-    if (range.start == 1) {
+    if (start == 1) {
       for (let i = startIndex; i <= endIndex; i++) {
         newData = [...newData, attendees[i]];
-        range.start++;
+        start++;
 
-        if (range.start > range.end) {
+        if (start > end) {
           break;
         }
       }
     } else {
-      for (let i = 1; i < range.start; i++) {
+      for (let i = 1; i < start; i++) {
         startIndex++;
       }
 
       for (let i = startIndex; i <= endIndex; i++) {
         newData = [...newData, attendees[i]];
-        range.start++;
+        start++;
 
-        if (range.start > range.end) {
+        if (start > end) {
           break;
         }
       }
     }
 
     setFiltred(newData);
-
+    setQrsizevisible(false);
     setPdfqr(true);
     setGenerate(false);
   }
@@ -158,7 +165,7 @@ export default function GeneratePdf({
         {/* the dialog box to ask form the user to ask generate pdf form where to where */}
 
         {generate && (
-          <div className="absolute w-80 gap-4 shadow-2xl rounded-2xl bg-orange-100 p-5 flex justify-center items-center flex-col">
+          <div className="absolute w-80 gap-4 shadow-2xl rounded-2xl bg-orange-100 p-5 flex justify-center items-center flex-col ">
             <p> Enter the range</p>
             <div className="flex flex-row gap-2 items-center justify-center">
               Type:
@@ -221,11 +228,14 @@ export default function GeneratePdf({
             </div>
             <button
               button
-              className="px-2 py-1 bg-orange-300 rounded-xs hover:scale-105 active:scale-95 cursor-pointer"
-              onClick={handleGenerateQR}
+              className="px-2 py-1 bg-orange-300 rounded-xs   cursor-pointer"
+              onClick={() => {
+                setQrsizevisible(true);
+              }}
             >
               Qr only pdf
             </button>
+
             <button
               className="px-2 py-1 bg-blue-300 rounded-xs hover:scale-105 active:scale-95 cursor-pointer"
               onClick={() => {
@@ -233,6 +243,29 @@ export default function GeneratePdf({
               }}
             >
               Close{" "}
+            </button>
+          </div>
+        )}
+        {qrsizevisible && (
+          <div className="absolute bg-orange-500 z-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-between items-center p-10 shadow-2xl gap-2 rounded-xl">
+            <input
+              className="bg-violet-200 w-40 rounded-xl p-2 "
+              type="number"
+              placeholder="qr size"
+              value={size}
+              onChange={(e) => {
+                setSize(e.target.value);
+              }}
+            />
+
+            <button
+              className="px-2 py-1 bg-orange-300 rounded-xs  cursor-pointer"
+              onClick={() => {
+                setQrsizevisible(false);
+                handleGenerateQR();
+              }}
+            >
+              Generate
             </button>
           </div>
         )}
@@ -260,6 +293,7 @@ export default function GeneratePdf({
         {filtred?.length > 0 ? (
           pdfqr && (
             <PdfFileQr
+              size={size}
               attendees={filtred?.map((att) => ({
                 position: att.position,
                 company: att.company,
