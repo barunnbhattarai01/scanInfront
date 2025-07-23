@@ -80,7 +80,7 @@ export default function GeneratePdf({
   }
 
   // to handle only the generation of the pdf with qr only
-  function handleGenerate() {
+  function handleGenerateQR() {
     if (range.end == 0 || range.start == 0 || type.length == 0) {
       alert("Please enter a valid range");
       return;
@@ -222,9 +222,7 @@ export default function GeneratePdf({
             <button
               button
               className="px-2 py-1 bg-orange-300 rounded-xs hover:scale-105 active:scale-95 cursor-pointer"
-              onClick={() => {
-                handleGenerate();
-              }}
+              onClick={handleGenerateQR}
             >
               Qr only pdf
             </button>
