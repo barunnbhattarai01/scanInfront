@@ -26,7 +26,7 @@ export default function GeneratePdf({
 
   function handleGenerate() {
     let start = parseInt(range.start);
-    let end = parseInt(rangeend);
+    let end = parseInt(range.end);
 
     if (end == 0 || start == 0 || type.length == 0) {
       alert("Please enter a valid range");
