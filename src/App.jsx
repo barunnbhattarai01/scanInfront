@@ -5,6 +5,7 @@ import UsersPage from "./page/Userpage";
 import ScanQr from "./features/qr/page/ScanQr";
 import Login from "./features/auth/pages/Login";
 import NavLayout from "./features/common/component/NavLayout";
+import CheckQr from "./features/qr/page/CheckQr";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           {/* <Route path="/" index element={<ScanQr />} /> */}
           <Route path="/users" element={<UsersPage />} />
           <Route path="/" element={<EventsPage />} />
+          <Route path="/checkattid" element={<CheckQr />} />
           <Route path="/activity/:eventId" element={<ActivitiesPage />} />
         </Route>
 
