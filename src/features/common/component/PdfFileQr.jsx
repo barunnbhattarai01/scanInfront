@@ -1,5 +1,7 @@
 import {
   Page,
+  Text,
+  View,
   Document,
   StyleSheet,
   Image,
@@ -8,48 +10,72 @@ import {
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
 
-// PdfDocument: 1 QR per page
-const PdfDocument = ({ attendees, size }) => {
-  const pageSize = [size, size]; // 60px x 60px in points
-
-  const styles = StyleSheet.create({
-    page: {
-      width: size,
-      height: size,
-      padding: 0,
-      margin: 0,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    qrImage: {
-      width: size,
-      height: size,
-      objectFit: "contain",
-    },
-  });
-
+const PdfDocument = ({ attendees, size, styles }) => {
   return (
     <Document>
-      {attendees.map((att, i) => (
-        <Page key={i} size={pageSize} style={styles.page}>
-          <Image src={att.qrUrl} style={styles.qrImage} />
-        </Page>
-      ))}
+      <Page wrap size="A4" style={styles.page} break={true}>
+        {attendees.map((att, i) => (
+          <View style={styles.attendeeBox}>
+            <View style={styles.qrandtext}>
+              <Image
+                src={att?.qrUrl}
+                style={{ height: `${size}px`, width: `${size}px` }}
+              />
+              <Text style={styles.forInv}>
+                {att?.role}-{att?.auto_id}
+              </Text>
+            </View>
+          </View>
+        ))}
+      </Page>
     </Document>
   );
 };
 
 // Main Component
-export default function PdfFileQr({ attendees = [], size = 60 }) {
+export default function PdfFileQr({ attendees = [], size }) {
+  const newsize = size + 10;
+  const styles = StyleSheet.create({
+    page: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      padding: "10px",
+      justifyContent: "flex-start",
+      alignItems: "flex-start",
+    },
+
+    attendeeBox: {
+      minHeight: 120,
+    },
+
+    qrandtext: {
+      flexDirection: "column",
+      alignItems: "center",
+    },
+    qrImage: {
+      height: `${size}px`,
+      width: `${size}px`,
+      objectFit: "contain",
+    },
+    forInv: {
+      fontSize: 9,
+      textAlign: "center",
+      marginTop: 4,
+      fontWeight: 500,
+    },
+  });
+
   const [processedAttendees, setProcessedAttendees] = useState([]);
+  const profileImage =
+    "/mnt/data/WhatsApp Image 2025-07-17 at 19.48.46_3ae0b241.jpg";
 
   useEffect(() => {
     const generateQRCodes = async () => {
       const dataWithQR = await Promise.all(
-        attendees.map(async (att) => {
+        attendees.map(async (att, idx) => {
+          const qrText = `${String(idx + 1).padStart(3, "0")}`;
           const qrUrl = await QRCode.toDataURL(att.attendee_id);
-          return { ...att, qrUrl };
+          return { ...att, qrUrl, invoice: qrText };
         })
       );
       setProcessedAttendees(dataWithQR);
@@ -65,15 +91,17 @@ export default function PdfFileQr({ attendees = [], size = 60 }) {
       <PDFDownloadLink
         document={
           <PdfDocument
+            styles={styles}
+            size={size}
             attendees={processedAttendees}
-            size={80} // hardcoded 60px page size
+            profileImage={profileImage}
           />
         }
-        fileName="QR_Codes_Square.pdf"
+        fileName="Bulk_Attendees.pdf"
       >
         {({ loading }) => (
           <button className="p-2 bg-blue-500 text-white rounded-lg cursor-pointer hover:scale-105 active:scale-95">
-            {loading ? "Generating PDF..." : "Download QR PDF"}
+            {loading ? "Generating PDF..." : "Download PDF"}
           </button>
         )}
       </PDFDownloadLink>
