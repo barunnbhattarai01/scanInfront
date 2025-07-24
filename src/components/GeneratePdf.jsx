@@ -267,6 +267,15 @@ export default function GeneratePdf({
             >
               Generate
             </button>
+
+            <button
+              className="px-2 py-1 bg-blue-300 rounded-xs  cursor-pointer"
+              onClick={() => {
+                setQrsizevisible(false);
+              }}
+            >
+              Close
+            </button>
           </div>
         )}
 

@@ -5,9 +5,9 @@ function QRScanner({ onScanSuccess }) {
   useEffect(() => {
     const scanner = new Html5QrcodeScanner(
       "qr-reader",
-      { facingMode: { exact: "environmetn" } },
+      { facingMode: { exact: "environment" } },
       {
-        fps: 10,
+        fps: 0.2,
         qrbox: { width: 250, height: 250 },
       }
     );
