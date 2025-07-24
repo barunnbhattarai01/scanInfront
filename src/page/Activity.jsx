@@ -102,7 +102,6 @@ function ActivitiesPage() {
     setAttendeeForm({ ...attendeeForm, [e.target.name]: e.target.value });
   };
 
-
   const handleAddAttendee = async (e) => {
     e.preventDefault();
     try {
@@ -235,7 +234,7 @@ function ActivitiesPage() {
         </>
       )}
 
-      {view === "checkin" && <CheckIn />}
+      {view === "checkin" && <CheckIn eventId={eventId} />}
 
       <Link
         to="/"

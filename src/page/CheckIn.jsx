@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BACKENDURL } from "../configuration";
 import useUserInfo from "../features/common/hooks/useUserInfo";
 
-export default function CheckIn() {
+export default function CheckIn({ eventId }) {
   const [checkIn, setCheckIn] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function CheckIn() {
       if (userLoading || !jwt) return;
 
       try {
-        const response = await fetch(`${BACKENDURL}/checkins`, {
+        const response = await fetch(`${BACKENDURL}/checkins/${eventId}`, {
           headers: { Authorization: `Bearer ${jwt}` },
         });
 
