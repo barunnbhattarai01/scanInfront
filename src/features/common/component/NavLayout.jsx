@@ -30,7 +30,7 @@ export default function NavLayout() {
             Home
           </Link>
 
-          {/* <Link
+          <Link
             onClick={() => {
               setStyle("event");
             }}
@@ -40,7 +40,7 @@ export default function NavLayout() {
             }`}
           >
             User
-          </Link> */}
+          </Link>
           <Link to="/checkattid">
             <button className="bg-orange-300 px-2 rounded-xs font-semibold py-1 cursor-pointer hover:bg-orange-400 active:scale-95 hover:scale-105">
               Check attendee

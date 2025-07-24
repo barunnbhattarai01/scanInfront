@@ -66,7 +66,7 @@ export default function PdfFileQr({ attendees = [], size = 42 }) {
         document={
           <PdfDocument
             attendees={processedAttendees}
-            size={size} // 🔥 Dynamic page size
+            size={size} //  Dynamic page size
           />
         }
         fileName={`QR_Codes_${size}px.pdf`}
