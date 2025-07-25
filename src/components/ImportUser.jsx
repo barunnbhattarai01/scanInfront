@@ -52,7 +52,7 @@ const ImportUsers = ({ eventId }) => {
       setLogs(data);
       setmsg("Users imported successfully!");
       setTimeout(() => {
-        setSuccessMsg("");
+        setmsg("");
       }, 3000);
     } catch (err) {
       setError(err.message);
@@ -88,7 +88,7 @@ const ImportUsers = ({ eventId }) => {
 
       {msg && (
         <div className="mt-4 text-green-700 bg-green-100 p-2 rounded-lg text-sm">
-          {successMsg}
+          {msg}
         </div>
       )}
 
