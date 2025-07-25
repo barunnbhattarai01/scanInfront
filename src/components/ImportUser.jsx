@@ -50,7 +50,7 @@ const ImportUsers = ({ eventId }) => {
 
       const data = await response.json();
       setLogs(data);
-      setSuccessMsg("Users imported successfully!");
+      setmsg("Users imported successfully!");
       setTimeout(() => {
         setSuccessMsg("");
       }, 3000);
