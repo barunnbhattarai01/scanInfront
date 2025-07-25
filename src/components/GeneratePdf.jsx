@@ -39,7 +39,7 @@ export default function GeneratePdf({
       return;
     }
 
-    const sliced = filteredByRole.slice(start - 1, end);
+    const sliced = filteredByRole.slice(start, end);
     setFiltred(sliced);
     setPdfgenerate(true);
     setGenerate(false);
@@ -65,7 +65,7 @@ export default function GeneratePdf({
       return;
     }
 
-    const sliced = filteredByRole.slice(start - 1, end);
+    const sliced = filteredByRole.slice(start, end);
     setFiltred(sliced);
     setQrsizevisible(false);
     setPdfqr(true);
