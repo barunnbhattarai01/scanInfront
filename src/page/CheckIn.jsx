@@ -119,6 +119,9 @@ export default function CheckIn({ eventId }) {
             <p>
               <strong>Scanned By:</strong> {check.scanned_by}
             </p>
+            <p>
+              <strong>Activity Name: {check.activity_name}</strong>
+            </p>
             <p className="flex items-center gap-2">
               <strong>Status:</strong> {check.status}
               {edit[check.id] && (
