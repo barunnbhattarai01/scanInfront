@@ -63,7 +63,7 @@ const ImportUsers = ({ eventId }) => {
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-2xl shadow-lg mt-10">
-      <h2 className="text-xl font-bold mb-4 text-gray-800">Import Users</h2>
+      <h2 className="text-xl font-bold mb-4 text-gray-800">Import Data</h2>
 
       <input
         type="file"
