@@ -7,6 +7,7 @@ import useUserInfo from "../features/common/hooks/useUserInfo";
 import UserList from "./UserList";
 import Activities from "./Activites";
 import GeneratePdf from "../components/GeneratePdf";
+import ImportUsers from "../components/ImportUser";
 
 function ActivitiesPage() {
   const { eventId } = useParams();
@@ -164,6 +165,17 @@ function ActivitiesPage() {
         >
           Check In
         </button>
+
+        <button
+          className={`px-4 py-2 border border-blue-600 rounded ${
+            view === "import"
+              ? "bg-blue-600 text-white font-bold"
+              : "bg-white text-blue-600"
+          }`}
+          onClick={() => setView("import")}
+        >
+          Import
+        </button>
       </div>
 
       {view === "activities" && (
@@ -235,6 +247,8 @@ function ActivitiesPage() {
       )}
 
       {view === "checkin" && <CheckIn eventId={eventId} />}
+
+      {view === "import" && <ImportUsers eventId={eventId} />}
 
       <Link
         to="/"
