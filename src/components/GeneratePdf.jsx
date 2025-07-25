@@ -19,126 +19,54 @@ export default function GeneratePdf({
     end: "",
   });
 
-  // declaring index variable to track the variables
-
-  let startIndex;
-  let endIndex = 0;
-
   function handleGenerate() {
-    let start = parseInt(range.start);
-    let end = parseInt(range.end);
+    const start = parseInt(range.start);
+    const end = parseInt(range.end);
 
-    if (end == 0 || start == 0 || type.length == 0) {
+    if (!start || !end || !type.trim()) {
       alert("Please enter a valid range");
       return;
     }
 
-    // to find the starting index and end index of the type defined by the user
+    const filteredByRole = attendees.filter(
+      (attendee) => attendee.role.toLowerCase() === type.toLowerCase()
+    );
 
-    // loop to find the starting index
-
-    for (let i = 0; i < attendees.length; i++) {
-      if (type.toUpperCase() == attendees[i].role.toUpperCase()) {
-        startIndex = i;
-        break;
-      }
+    if (start > end || start < 1 || end > filteredByRole.length) {
+      alert(
+        `Invalid range. Only ${filteredByRole.length} attendees with role ${type}`
+      );
+      return;
     }
 
-    // loop to find the end index
-
-    for (let i = startIndex; i < attendees.length; i++) {
-      if (type.toUpperCase() == attendees[i].role.toUpperCase()) {
-        endIndex = i;
-      }
-    }
-
-    let newData = [];
-
-    if (start == 1) {
-      for (let i = startIndex; i <= endIndex; i++) {
-        newData = [...newData, attendees[i]];
-        start++;
-
-        if (start > end) {
-          break;
-        }
-      }
-    } else {
-      for (let i = 1; i < start; i++) {
-        startIndex++;
-      }
-
-      for (let i = startIndex; i <= endIndex; i++) {
-        newData = [...newData, attendees[i]];
-        start++;
-
-        if (start > end) {
-          break;
-        }
-      }
-    }
-
-    setFiltred(newData);
-
+    const sliced = filteredByRole.slice(start - 1, end);
+    setFiltred(sliced);
     setPdfgenerate(true);
     setGenerate(false);
   }
 
-  // to handle only the generation of the pdf with qr only
   function handleGenerateQR() {
-    let start = parseInt(range.start);
-    let end = parseInt(range.end);
-    if (end == 0 || start == 0 || type.length == 0) {
+    const start = parseInt(range.start);
+    const end = parseInt(range.end);
+
+    if (!start || !end || !type.trim()) {
       alert("Please enter a valid range");
       return;
     }
 
-    // to find the starting index and end index of the type defined by the user
+    const filteredByRole = attendees.filter(
+      (attendee) => attendee.role.toLowerCase() === type.toLowerCase()
+    );
 
-    // loop to find the starting index
-
-    for (let i = 0; i < attendees.length; i++) {
-      if (type.toUpperCase() == attendees[i].role.toUpperCase()) {
-        startIndex = i;
-        break;
-      }
+    if (start > end || start < 1 || end > filteredByRole.length) {
+      alert(
+        `Invalid range. Only ${filteredByRole.length} attendees with role ${type}`
+      );
+      return;
     }
 
-    // loop to find the end index
-
-    for (let i = startIndex; i < attendees.length; i++) {
-      if (type.toUpperCase() == attendees[i].role.toUpperCase()) {
-        endIndex = i;
-      }
-    }
-
-    let newData = [];
-
-    if (start == 1) {
-      for (let i = startIndex; i <= endIndex; i++) {
-        newData = [...newData, attendees[i]];
-        start++;
-
-        if (start > end) {
-          break;
-        }
-      }
-    } else {
-      for (let i = 1; i < start; i++) {
-        startIndex++;
-      }
-
-      for (let i = startIndex; i <= endIndex; i++) {
-        newData = [...newData, attendees[i]];
-        start++;
-
-        if (start > end) {
-          break;
-        }
-      }
-    }
-
-    setFiltred(newData);
+    const sliced = filteredByRole.slice(start - 1, end);
+    setFiltred(sliced);
     setQrsizevisible(false);
     setPdfqr(true);
     setGenerate(false);
@@ -161,8 +89,6 @@ export default function GeneratePdf({
             </button>
           )}
         </div>
-
-        {/* the dialog box to ask form the user to ask generate pdf form where to where */}
 
         {generate && (
           <div className="absolute w-80 gap-4 shadow-2xl rounded-2xl bg-orange-100 p-5 flex justify-center items-center flex-col ">
@@ -227,7 +153,6 @@ export default function GeneratePdf({
               </button>
             </div>
             <button
-              button
               className="px-2 py-1 bg-orange-300 rounded-xs   cursor-pointer"
               onClick={() => {
                 setQrsizevisible(true);
@@ -246,6 +171,7 @@ export default function GeneratePdf({
             </button>
           </div>
         )}
+
         {qrsizevisible && (
           <div className="absolute bg-orange-500 z-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col justify-between items-center p-10 shadow-2xl gap-2 rounded-xl">
             <input

@@ -107,6 +107,7 @@ export default function CheckIn({ eventId }) {
           key={check.id}
           className="max-w-xl mx-auto p-6 bg-white shadow rounded-xl mt-10"
         >
+          {console.log(check)}
           <div className="bg-gray-100 p-4 rounded space-y-2">
             <p>
               <strong>Full Name:</strong> {check.full_name}
