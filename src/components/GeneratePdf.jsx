@@ -28,9 +28,9 @@ export default function GeneratePdf({
       return;
     }
 
-    const filteredByRole = attendees.filter(
-      (attendee) => attendee.role.toLowerCase() === type.toLowerCase()
-    );
+    const filteredByRole = attendees
+      .filter((attendee) => attendee.role.toLowerCase() === type.toLowerCase())
+      .sort((a, b) => a.auto_id - b.auto_id);
 
     if (start > end || start < 1 || end > filteredByRole.length) {
       alert(
@@ -54,9 +54,9 @@ export default function GeneratePdf({
       return;
     }
 
-    const filteredByRole = attendees.filter(
-      (attendee) => attendee.role.toLowerCase() === type.toLowerCase()
-    );
+    const filteredByRole = attendees
+      .filter((attendee) => attendee.role.toLowerCase() === type.toLowerCase())
+      .sort((a, b) => a.auto_id - b.auto_id);
 
     if (start > end || start < 1 || end > filteredByRole.length) {
       alert(
@@ -97,7 +97,7 @@ export default function GeneratePdf({
               Type:
               <input
                 type="text"
-                className="  w-15 focus:ring-3 focus:ring-orange-400 outline-none transition-all bg-blue-300 px-2 py-1"
+                className="w-15 focus:ring-3 focus:ring-orange-400 outline-none transition-all bg-blue-300 px-2 py-1"
                 value={type}
                 onChange={(e) => {
                   setType(e.target.value);
@@ -108,7 +108,7 @@ export default function GeneratePdf({
               from:{" "}
               <input
                 type="number"
-                className="  w-15 px-2 py-1 bg-blue-200 rounded-xs focus:ring-3 focus:ring-orange-400 outline-none transition-all "
+                className="w-15 px-2 py-1 bg-blue-200 rounded-xs focus:ring-3 focus:ring-orange-400 outline-none transition-all"
                 value={range.start}
                 onChange={(e) => {
                   setRange((pre) => {
@@ -122,7 +122,7 @@ export default function GeneratePdf({
               to:{" "}
               <input
                 type="number"
-                className=" w-15 px-2 py-1 bg-blue-200 rounded-xs focus:ring-3 focus:ring-orange-400 outline-none transition-all"
+                className="w-15 px-2 py-1 bg-blue-200 rounded-xs focus:ring-3 focus:ring-orange-400 outline-none transition-all"
                 value={range.end}
                 onChange={(e) => {
                   setRange((pre) => {
@@ -144,7 +144,10 @@ export default function GeneratePdf({
               <button
                 className="px-2 py-1 bg-orange-300 rounded-xs hover:scale-105 active:scale-95 cursor-pointer"
                 onClick={() => {
-                  setFiltred(attendees);
+                  const sorted = attendees.sort(
+                    (a, b) => a.auto_id - b.auto_id
+                  );
+                  setFiltred(sorted);
                   setPdfgenerate(true);
                   setGenerate(false);
                 }}
@@ -153,7 +156,7 @@ export default function GeneratePdf({
               </button>
             </div>
             <button
-              className="px-2 py-1 bg-orange-300 rounded-xs   cursor-pointer"
+              className="px-2 py-1 bg-orange-300 rounded-xs cursor-pointer"
               onClick={() => {
                 setQrsizevisible(true);
               }}
@@ -167,7 +170,7 @@ export default function GeneratePdf({
                 setGenerate(false);
               }}
             >
-              Close{" "}
+              Close
             </button>
           </div>
         )}
@@ -185,7 +188,7 @@ export default function GeneratePdf({
             />
 
             <button
-              className="px-2 py-1 bg-orange-300 rounded-xs  cursor-pointer"
+              className="px-2 py-1 bg-orange-300 rounded-xs cursor-pointer"
               onClick={() => {
                 setQrsizevisible(false);
                 handleGenerateQR();
