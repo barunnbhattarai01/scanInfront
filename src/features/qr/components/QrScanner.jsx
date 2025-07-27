@@ -48,7 +48,7 @@ function QRScanner({ onScanSuccess }) {
 
   useEffect(() => {
     if (cameraAccess) {
-      scanInterval.current = setInterval(captureFrameAndScan, 1000);
+      scanInterval.current = setInterval(captureFrameAndScan, 2000);
     }
 
     return () => clearInterval(scanInterval.current);
