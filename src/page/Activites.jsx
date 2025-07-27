@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function Activities({ eventId, loading, jwt }) {
   const [showAddActivityForm, setShowAddActivityForm] = useState(false);
   const [activities, setActivities] = useState(null);
+  const [totalParticipants, setTotalParticipants] = useState(0);
   const navigate = useNavigate();
 
   const [activityForm, setActivityForm] = useState({
@@ -55,6 +56,7 @@ export default function Activities({ eventId, loading, jwt }) {
 
       const data = await res.json();
       setActivities(data.activities);
+      setTotalParticipants(data.event.number_of_participant);
     } catch (err) {
       console.error("Failed to fetch event info", err);
     }
@@ -135,16 +137,22 @@ export default function Activities({ eventId, loading, jwt }) {
           {activities?.map((a) => (
             <li
               key={a.id}
-              className="mb-3 p-3 border border-gray-300 rounded cursor-pointer"
+              className="mb-3 p-3 border border-gray-300 rounded cursor-pointer flex justify-between items-center"
               onClick={() => {
                 navigate(`/scan/${a.id}`);
               }}
-            >
-              <strong>{a.name}</strong> – {a.type}
-              <br />
-              Start: {new Date(a.start_time).toLocaleString()}
-              <br />
-              End: {new Date(a.end_time).toLocaleString()}
+            ><div>
+                <strong>{a.name}</strong> – {a.type}
+                <br />
+                Start: {new Date(a.start_time).toLocaleString()}
+                <br />
+                End: {new Date(a.end_time).toLocaleString()}
+              </div>
+              <div className="text-sm text-gray-600">
+               { console.log(activities.number_of_participant) }
+                 
+                {a.number_of_scaned_users}/{totalParticipants} 
+              </div>
             </li>
           ))}
         </ul>
