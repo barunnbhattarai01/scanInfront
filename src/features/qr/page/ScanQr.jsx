@@ -4,12 +4,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BACKENDURL } from "../../../configuration";
 import useUserInfo from "../../common/hooks/useUserInfo";
 import { CheckCircle, XCircle } from "lucide-react";
+import "./animation.css";
 
 function ScanQr() {
   const { user, loading, jwt } = useUserInfo();
   const { activityId } = useParams();
   const [message, setMessage] = useState(null);
-
   const navigate = useNavigate();
 
   //disappering logic of sucessfully checkin and failed checkin
@@ -17,7 +17,7 @@ function ScanQr() {
     if (message) {
       const timer = setTimeout(() => {
         setMessage(null);
-      }, 2000);
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [message]);
@@ -94,20 +94,50 @@ function ScanQr() {
         padding: "20px",
       }}
     >
-      <h2>QR Scanner Loaded</h2>
       <QRScanner onScanSuccess={(text) => onClick(text)} />
 
-      {message && (
-        <div
-          className={`mt-5 px-6 py-3 rounded-lg text-sm font-medium border ${
-            message.type === "success"
-              ? "bg-green-100 text-green-800 border-green-300"
-              : "bg-red-100 text-red-800 border-red-300"
-          }`}
-        >
-          {message.text}
-        </div>
-      )}
+      {message &&
+        (message.type == "success" ? (
+          <div>
+            <div class="success-checkmark">
+              <div class="check-icon">
+                <span class="icon-line line-tip"></span>
+                <span class="icon-line line-long"></span>
+                <div class="icon-circle"></div>
+                <div class="icon-fix"></div>
+              </div>
+            </div>
+            <center>
+              <button id="restart">Restart Animation</button>
+            </center>
+          </div>
+        ) : (
+          <div>
+            <svg
+              class="crossmark addClass"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 52 52"
+            >
+              <circle
+                class="crossmark__circle addClass"
+                cx="26"
+                cy="26"
+                r="25"
+                fill="none"
+              />
+              <path
+                class="cross__path cross__path--right addClass"
+                fill="none"
+                d="M16,16 l20,20"
+              />
+              <path
+                class="cross__path cross__path--left addClass"
+                fill="none"
+                d="M16,36 l20,-20"
+              />
+            </svg>
+          </div>
+        ))}
     </div>
   );
 }
